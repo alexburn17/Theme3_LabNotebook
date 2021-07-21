@@ -13,7 +13,7 @@ Author: P. Alexander Burnham
 
 
 ### 20 July 2021:
-Created a reticulate package and activated a new conda environment. Making sure R and Python are playing well with each other and that this format will work for keeping track of progress efficiently. By using the same conda environment that I am using in pycharm for the function's development, there should be no issues with python versions and package dependencies.
+Loaded the reticulate package and activated a new conda environment. Making sure R and Python are playing well with each other and that this format will work for keeping track of progress efficiently. By using the same conda environment that I am using in pycharm for the function's development, there should be no issues with python versions and package dependencies.
 
 ```{r setup, include=T}
 
