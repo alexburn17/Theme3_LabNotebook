@@ -1,9 +1,6 @@
-## Welcome to GitHub Pages
+## Theme 3 Informational Home Page
+P. Alexander Burnham
 
-You can use the [editor on GitHub](https://github.com/alexburn17/Theme3_LabNotebook/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### Lab Notebook 20 July 2021-present
+[Lab Notebook Volume 1](R_scripts/Theme3_labNotebook.html)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
