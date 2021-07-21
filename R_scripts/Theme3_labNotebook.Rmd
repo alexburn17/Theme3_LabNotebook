@@ -1,0 +1,105 @@
+---
+title: "Theme 3 Lab Notebook"
+
+output: html_document
+---
+
+### Description:
+
+Date created:  20 July 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+### 20 July 2021:
+Created a reticulate package and activated a new conda environment. Making sure R and Python are playing well with each other and that this format will work for keeping track of progress efficiently. By using the same conda environment that I am using in pycharm for the function's development, there should be no issues with python versions and package dependencies.
+
+```{r setup, include=T}
+
+
+# set my working directory
+#setwd("~/Documents/GitHub/Theme3_LabNotebook/R_scripts")
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda environment
+use_condaenv(condaenv = "myCondaEnvironment", conda = "auto", required = FALSE)
+
+
+```
+
+
+
+First Python Chunk to make sure things are working
+```{python}
+
+# import numpy and check to ensure the version of python is correct for my conda env.
+import numpy as np
+import platform
+
+
+print(platform.python_version())
+
+```
+Version of python is correct. Here I am writing some test python code to check that it interfaces with R in the following chunk
+```{python}
+
+# a 150 x 2 array of random numbers bound 0 to 1
+randArray = np.random.rand(150,2)
+print(randArray[0:3,])
+
+```
+
+An R chunck where I call the new python variable as py$pythonObj
+```{r}
+# checking out how it comes in
+head(py$randArray)
+# convert to data frame
+randArray_R <- data.frame(py$randArray)
+
+# load ggplot2
+library(ggplot2)
+
+# plot the python array as a scatter plot
+ggplot(randArray_R, aes(x=X1, y=X2)) +
+    geom_point(shape=1) + 
+    geom_smooth()   
+
+```
+
+
+Plot the R dataframe in matplotlib by calling it as r.R_Obj, comes in as a dictionary
+```{python, message=FALSE}
+
+import matplotlib.pyplot as plt
+from numpy.polynomial.polynomial import polyfit
+
+# assign names x and y
+x = r.randArray_R["X1"]
+y =r.randArray_R["X2"]
+
+# plot the values in the dictionary
+plt.scatter(x, y)
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.show()
+
+
+```
+
+
+
+Things look good. Now pulling in the netCDF4 library in python
+```{python}
+
+import netCDF4 as nc
+
+
+
+
+```
+
+
+
