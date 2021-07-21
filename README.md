@@ -1,2 +1,2 @@
-# Theme3_LabNotbook
- updates for theme 3 progress
+# Theme 3 Lab Notebook Page
+ Alex's updates for theme 3
