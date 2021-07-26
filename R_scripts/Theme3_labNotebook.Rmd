@@ -98,7 +98,7 @@ import netCDF4 as nc
 import numpy as np
 
 # locate local path to .nc4 test file
-fn = "/Users/pburnham/Documents/GitHub/Theme3_LabNotebook/Theme3_PythonProjects/netCDF4_Ideas/data/prcp_1980.nc4"
+fn = "/Users/pburnham/Documents/GitHub/Theme3_LabNotebook/R_scripts/data/prcp_1980.nc4"
 
 # create netcdf data set
 ds = nc.Dataset(fn)
@@ -118,5 +118,56 @@ print(np.mean(prcp))
 
 ```
 
+### July 22, 2021
+Here I am playing with a package called Cubes in python. It is a lightweight OLAP cubes implementation with an sql back-end. I began by working through the tutorial but found that the library is no longer being maintained and will not work with newer python and sql alchemy. I could drop down to a previous version of python but I believe I will continue on another line to avoid this for now.
+
+```{python}
+
+from sqlalchemy import create_engine
+from cubes.tutorial.sql import create_table_from_csv
+from cubes import Workspace
+
+#begin the sqlite environment 
+engine = create_engine('sqlite:///data.sqlite')
+
+# create the table and fields
+create_table_from_csv(engine,
+                      "/Users/pburnham/Documents/GitHub/Theme3_LabNotebook/R_scripts/data/IBRD_Balance_Sheet__FY2010.csv",
+                      table_name="ibrd_balance",
+                      fields=[
+                            ("category", "string"),
+                            ("category_label", "string"),
+                            ("subcategory", "string"),
+                            ("subcategory_label", "string"),
+                            ("line_item", "string"),
+                            ("year", "integer"),
+                            ("amount", "integer")],
+                      create_id=True
+                      )
+
+# initiate the workspace
+workspace = Workspace()
+workspace.register_default_store("sql", url="sqlite:///data.sqlite")
+
+# import the model as a .json file
+workspace.import_model("tutorial_model.json")
+
+# start up the browser
+browser = workspace.browser("ibrd_balance")
+
+# use the aggregate function to get an aggregation for the whole cube
+result = browser.aggregate()
+
+# print the results for record counts and amount sum
+print(result.summary["record_count"])
+print(result.summary["amount_sum"])
+
+# this function call doesn't work. This is due to a lack of modernization in cubes
+# this causes a problem and I don't want to work backwords to make it work
+#result = browser.aggregate(drilldown=["item"])
 
 
+#for record in result:
+#    print(record)
+
+```
