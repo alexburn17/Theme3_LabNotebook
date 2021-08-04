@@ -42,7 +42,7 @@ from osgeo import gdal
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
-
+import time
 
 # set my absolute directory path for where the data are
 direc ="/Users/pburnham/Documents/geospatialData/"
@@ -51,7 +51,7 @@ direc ="/Users/pburnham/Documents/geospatialData/"
 dataPaths = glob.glob(direc+"*.tif")
 print(dataPaths)
 
-time = len(dataPaths) # time dimension (three times: 1980-1982 inclusive)
+timeList = len(dataPaths) # time dimension (three times: 1980-1982 inclusive)
 
 # create raster data set from the second file in the list
 ds = gdal.Open(dataPaths[1])
@@ -75,7 +75,7 @@ Convert to an array and plot
 # pull out the band
 band = ds.GetRasterBand(1)
 
-# # not effiecent for big data sets like this but just to see as a plt
+# # convert to a large numpy array - may not be the best way to handle things
 myarray = np.array(band.ReadAsArray()) #(989,335,620 points on the map)
 #
 #
@@ -85,10 +85,75 @@ plt.show()
 
 ```
 
+Out of curiosity, what is the clock time for dividing a 989 million cell vectorized division process on a numpy array on my m1 macbook.
+```{python}
+start = time.process_time()
+
+# divide every cell in the array by 2
+x = np.divide(myarray,2)
+
+# print the run time
+print("Running time in seconds:", time.process_time() - start)
+
+
+
+
+```
 
 ### 3 August 2021
 Here I am attempting to pull in multiple geotiff files and create a list of gdal data sets. I will then scale them to have the same resolution and use the same coordinate systems and measurement schemes. The goal is to use meters, default to EPSG:3857 and default to the highest common scale in terms of granularity. This can be changed in the future. I will use GDAL as it seems that this is the underlying library that is used in most other python geospatial libraries.
 
 ```{python}
+from osgeo import gdal
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/geospatialData/"
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+"*.tif")
+#print(dataPaths)
+
+timeList = len(dataPaths) # time dimension (three times: 1980-1982 inclusive)
+
+# initialize a list to store files in during the loop
+myDataList = [None] * timeList
+
+# create a list of rasters
+for t in range(0, timeList):
+   myDataList[t] = gdal.Open(dataPaths[t])
+
+
+
+
+##################################################################################################
+# we have rasters of India using different coordinate systems, resulutions and slightly different cropeed frames
+# here I will attempt to create a put them on a commmon coordinate system and scale
+
+# print the transformes
+print("Course Area:", myDataList[0].GetGeoTransform()) # file one us UTS scaled in degrees
+print("Fine Population:", myDataList[1].GetGeoTransform()) # file two is using meters
+
+# get projection info
+print("Course Area:", myDataList[0].GetProjection())
+print("Fine Population:", myDataList[1].GetProjection())
+
+
+# initialize a list to store altered files
+myDataListScaled = [None] * timeList
+
+# create a list of rasters rescaled to EPSG:3857 with a common grid size
+# the resulutions are hard-coded here. Will add flexability nect by picking max dim of all imported rasters
+for t in range(0, timeList):
+   myDataListScaled[t] = gdal.Warp('', myDataList[t], dstSRS='EPSG:3857', format='VRT',
+   outputType=gdal.GDT_Int16,xRes=1052.2047247721555, yRes=-1052.2047247721555)
+
+# reprint the transformes after allteration
+print("Course Area:", myDataListScaled[0].GetGeoTransform()) # file one us UTS scaled in degrees
+print("Fine Population:", myDataListScaled[1].GetGeoTransform()) # file two is using meters
 
 ```
