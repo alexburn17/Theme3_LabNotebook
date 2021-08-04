@@ -1,0 +1,87 @@
+---
+title: "Theme 3 Lab Notebook Volume 2"
+output: html_document
+---
+
+### Description:
+
+Date created:  2 August 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+### 2 August 2021:
+
+Here I load the GDAL library in python, read in raster files and figure out how to use the package to access the raster data.
+
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda 3.7 environment
+use_condaenv(condaenv = "Python37Env", conda = "auto", required = FALSE)
+
+
+```
+
+Make sure my 3.7 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.7 is laoded
+print(platform.python_version())
+```
+
+```{python}
+
+from osgeo import gdal
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/geospatialData/"
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+"*.tif")
+print(dataPaths)
+
+time = len(dataPaths) # time dimension (three times: 1980-1982 inclusive)
+
+# create raster data set from the second file in the list
+ds = gdal.Open(dataPaths[1])
+print(type(ds))
+
+
+
+# retrieving important meta data info
+print(ds.RasterXSize, ds.RasterYSize) # # get dims: 29484 x 33555
+print(ds.GetProjection()) # get projection info
+print("number of bands:", ds.RasterCount) # there is only one band as expected
+print(ds.GetGeoTransform())  # get transform data (corners)
+
+
+```
+
+Convert to an array and plot
+```{python}
+
+
+# pull out the band
+band = ds.GetRasterBand(1)
+
+# # not effiecent for big data sets like this but just to see as a plt
+myarray = np.array(band.ReadAsArray()) #(989,335,620 points on the map)
+#
+#
+# # plt the array as a heat map
+plt.imshow(myarray, cmap='hot', interpolation='nearest')
+plt.show()
+
+```
+
