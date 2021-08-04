@@ -85,3 +85,10 @@ plt.show()
 
 ```
 
+
+### 3 August 2021
+Here I am attempting to pull in multiple geotiff files and create a list of gdal data sets. I will then scale them to have the same resolution and use the same coordinate systems and measurement schemes. The goal is to use meters, default to EPSG:3857 and default to the highest common scale in terms of granularity. This can be changed in the future. I will use GDAL as it seems that this is the underlying library that is used in most other python geospatial libraries.
+
+```{python}
+
+```
