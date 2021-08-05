@@ -201,7 +201,8 @@ plt.show()
 
 ```
 
-
+### 5 August 2021
+Here I create a function that pulls in raster file names and returns a list of geospatially aligned raster objects of the same type
 ```{python, eval=FALSE}
 
 from osgeo import gdal
@@ -269,3 +270,52 @@ def raster_align(rastNames=None, resolution=None, SRS=3857, noneVal=-9999):
 
 ```
 
+Here is a driver that calls this function as an example.
+
+```{python}
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+from rasterAlign import *
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/geospatialData/"
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+"*.tif")
+
+
+# call the raster align function
+alignedRasters = raster_align(rastNames=dataPaths)
+
+# print the origins and pixel sizes for all three files after the transform
+print(alignedRasters[0].GetGeoTransform(1))
+print(alignedRasters[1].GetGeoTransform(1))
+print(alignedRasters[2].GetGeoTransform(1))
+
+
+# Specify srs 4326 vs 3857
+alignedRastersCustom = raster_align(rastNames=dataPaths, noneVal=-9999, SRS=4326)
+
+print(alignedRastersCustom[0].GetGeoTransform(1))
+print(alignedRastersCustom[1].GetGeoTransform(1))
+print(alignedRastersCustom[2].GetGeoTransform(1))
+
+
+# 3857 with a large pixel size
+alignedRastersDims = raster_align(rastNames=dataPaths, noneVal=-0, resolution=10000)
+
+print(alignedRastersDims[0].GetGeoTransform(1))
+print(alignedRastersDims[1].GetGeoTransform(1))
+print(alignedRastersDims[2].GetGeoTransform(1))
+
+ds = alignedRastersDims[0].ReadAsArray()
+im = plt.imshow(ds, cmap='hot', interpolation='nearest')
+plt.show()
+
+ds1 = alignedRastersDims[1].ReadAsArray()
+im1 = plt.imshow(ds1, cmap='hot', interpolation='nearest')
+plt.show()
+```
