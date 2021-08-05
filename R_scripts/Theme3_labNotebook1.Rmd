@@ -157,3 +157,46 @@ print("Course Area:", myDataListScaled[0].GetGeoTransform()) # file one us UTS s
 print("Fine Population:", myDataListScaled[1].GetGeoTransform()) # file two is using meters
 
 ```
+
+Here I scale down and make sure non data values are consitant and specified so they are not used in interpolation. Scaling down makes it easier to see what is going on
+```{python}
+
+############################################################################################################
+# the overall layer sizes are different but the actual data the rasters are aligned now. Next we have to figure out how
+# to write them into a netcdf4 array still aligned with eachother.
+# what to do about missing data and overlap is still a question of importance force -9999 as missing data as default
+# we can make this a user input
+
+
+# specifying targetAlignedPixels=True aligns pixels by coordinate system adn scaling down to make sure things are working 
+# adding missing data arguemnet
+for t in range(0, timeList):
+   myDataListScaled[t] = gdal.Warp('', myDataList[t], targetAlignedPixels=True, dstSRS='EPSG:3857', format='VRT',
+   outputType=gdal.GDT_Int16,xRes=200000, yRes=-200000, dstNodata=-9999, outputBounds="maxY")
+
+
+print(gdal.Info(myDataListScaled[0]))
+print(gdal.Info(myDataListScaled[1]))
+
+# pull out the bands
+band = myDataListScaled[0].GetRasterBand(1)
+band1 = myDataListScaled[1].GetRasterBand(1)
+
+# # convert to a numpy array - may not be the best way to handle things
+myarray = np.array(band.ReadAsArray())
+myarray1 = np.array(band1.ReadAsArray())
+
+# print the arrays
+print(myarray)
+print(myarray1)
+
+# # plt the array as a heat map
+plt.imshow(myarray, cmap='hot', interpolation='nearest')
+
+plt.show()
+
+# # plt the array as a heat map
+plt.imshow(myarray1, cmap='hot', interpolation='nearest')
+plt.show()
+
+```
