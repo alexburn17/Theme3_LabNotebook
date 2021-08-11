@@ -265,6 +265,10 @@ time = myDataList[0].variables['time'][:] # list of codes for 365 days
 dayl = myDataList[0].variables['dayl'][:] # this is a list of matrices one for each day of the year
 
 
+
+
+
+
 # the main variable in this data set is day length. the first dimensions is time in days 0-364 followed by lat and long
 #print(dayl[364,:,:]) # prints last days worth of data for all recorded lats and longs
 

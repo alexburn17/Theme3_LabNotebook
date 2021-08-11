@@ -176,7 +176,8 @@ Author: P. Alexander Burnham</p>
 </div>
 <div id="august-2021" class="section level3">
 <h3>9 August 2021:</h3>
-<p>Here I load the GDAL library in python, read in raster files and figure out how to use the package to access the raster data.</p>
+<p>The overall goal this week is to take the output of the rasterAlign function and write another function that creates a netcdf4 data set from it that contains all of the geospatial data and crops the data sets to the greatest common dimensions</p>
+<p>Here I am laoding in the python version from conda</p>
 <pre class="r"><code>#load the reticulate package  
 library(reticulate)
 
@@ -189,6 +190,51 @@ import platform
 # make sure python 3.7 is laoded
 print(platform.python_version())</code></pre>
 <pre><code>## 3.7.10</code></pre>
+<p>Bringing in the data and alligning the rasters with the rasterAling function</p>
+<pre class="python"><code>import glob
+import re
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+from rasterAlign import *
+import rasterio
+
+# set my absolute directory path for where the data are
+direc =&quot;/Users/pburnham/Documents/geospatialData/&quot;
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+&quot;*.tif&quot;)
+
+# call the raster align function 4326 vs 3857 nonVal SRS resolution
+alignedRasters = raster_align(rastNames=dataPaths, noneVal=-1)</code></pre>
+<p>Here I am playing with some code that creates a netCDF4 data set from random datajust to see what pieces I need to pull out from the raster align output list in order to convert it to the netcdf4 format.</p>
+<pre class="python"><code>
+# initialize file
+fn = &#39;/Users/pburnham/Documents/GitHub/Theme3_Burnham_Private/Theme3_PythonProjects/Python37Theme3/test.nc&#39;
+ds = nc.Dataset(fn, &#39;w&#39;, format=&#39;NETCDF4&#39;)
+
+# inmtialize vars by creating dimensions
+time = ds.createDimension(&#39;time&#39;, None)
+lat = ds.createDimension(&#39;lat&#39;, 10)
+lon = ds.createDimension(&#39;lon&#39;, 10)
+
+
+# create variables
+times = ds.createVariable(&#39;time&#39;, &#39;f4&#39;, (&#39;time&#39;,))
+lats = ds.createVariable(&#39;lat&#39;, &#39;f4&#39;, (&#39;lat&#39;,))
+lons = ds.createVariable(&#39;lon&#39;, &#39;f4&#39;, (&#39;lon&#39;,))
+value = ds.createVariable(&#39;value&#39;, &#39;f4&#39;, (&#39;time&#39;, &#39;lat&#39;, &#39;lon&#39;,))
+value.units = &#39;Unknown&#39;
+
+
+value[0, :, :] = np.random.uniform(0, 100, size=(10, 10))  # unifrom random values
+
+#print(&#39;var size after adding first data&#39;, value.shape)
+xval = np.linspace(0.5, 5.0, 10)
+yval = np.linspace(0.5, 5.0, 10)
+value[1, :, :] = np.array(xval.reshape(-1, 1) + yval)  # linear gradient values
+
+ds.close() # cluse the dataset out in memory</code></pre>
 </div>
 
 

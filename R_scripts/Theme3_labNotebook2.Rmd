@@ -13,8 +13,10 @@ Author: P. Alexander Burnham
 
 ### 9 August 2021:
 
-Here I load the GDAL library in python, read in raster files and figure out how to use the package to access the raster data.
+The overall goal this week is to take the output of the rasterAlign function and write another function that creates a netcdf4 data set from it that contains all of the geospatial data and crops the data sets to the greatest common dimensions
 
+
+Here I am laoding in the python version from conda
 ```{r setup, include=T}
 
 
@@ -36,7 +38,73 @@ import platform
 print(platform.python_version())
 ```
 
+Bringing in the data and alligning the rasters with the rasterAling function
 ```{python}
 
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+from rasterAlign import *
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/geospatialData/"
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+"*.tif")
+
+# call the raster align function 4326 vs 3857 nonVal SRS resolution
+alignedRasters = raster_align(rastNames=dataPaths, noneVal=-1)
+
+```
+
+Here I am playing with some code that creates a netCDF4 data set from random datajust to see what pieces I need to pull out from the raster align output list in order to convert it to the netcdf4 format.
+```{python}
+
+# initialize file
+fn = '/Users/pburnham/Documents/GitHub/Theme3_Burnham_Private/Theme3_PythonProjects/Python37Theme3/test.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+
+# inmtialize vars by creating dimensions
+time = ds.createDimension('time', None) # no time var in this case
+lat = ds.createDimension('lat', 10)
+lon = ds.createDimension('lon', 10)
+
+
+# create variables in the data set
+times = ds.createVariable('time', 'f4', ('time',))
+lats = ds.createVariable('lat', 'f4', ('lat',))
+lons = ds.createVariable('lon', 'f4', ('lon',))
+value = ds.createVariable('value', 'f4', ('time', 'lat', 'lon',))
+value.units = 'My Units'
+
+# create the main varaibles
+value[0, :, :] = np.random.uniform(0, 100, size=(10, 10))  # unifrom random values
+
+#print('var size after adding first data', value.shape)
+xval = np.linspace(0.5, 5.0, 10)
+yval = np.linspace(0.5, 5.0, 10)
+value[1, :, :] = np.array(xval.reshape(-1, 1) + yval)  # linear gradient values
+
+#ds.close() # cluse the dataset out in memory
+
+```
+
+Take a look at the dataset and add the lat and long values.
+```{python}
+print(ds)
+
+# add the lat and long vals
+ds.variables['lat'][:] = xval #add lat vals
+ds.variables['lon'][:] = yval # add long vals
+
+# write out data objects
+lat = ds.variables['lat'][:]
+lon = ds.variables['lon'][:]# matrix of longs
+val = ds.variables['value'][:] 
+
+print(val[0,:,:]) # print the values
+print(lat) # print the lat
+print(lon) # print the lat
 ```
 
