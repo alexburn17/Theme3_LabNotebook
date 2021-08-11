@@ -191,13 +191,12 @@ import platform
 print(platform.python_version())</code></pre>
 <pre><code>## 3.7.10</code></pre>
 <p>Bringing in the data and alligning the rasters with the rasterAling function</p>
-<pre class="python"><code>import glob
-import re
+<pre class="python"><code>
 import numpy as np
 import matplotlib.pyplot as plt
 import netCDF4 as nc
 from rasterAlign import *
-import rasterio
+
 
 # set my absolute directory path for where the data are
 direc =&quot;/Users/pburnham/Documents/geospatialData/&quot;
@@ -214,19 +213,19 @@ fn = &#39;/Users/pburnham/Documents/GitHub/Theme3_Burnham_Private/Theme3_PythonP
 ds = nc.Dataset(fn, &#39;w&#39;, format=&#39;NETCDF4&#39;)
 
 # inmtialize vars by creating dimensions
-time = ds.createDimension(&#39;time&#39;, None)
+time = ds.createDimension(&#39;time&#39;, None) # no time var in this case
 lat = ds.createDimension(&#39;lat&#39;, 10)
 lon = ds.createDimension(&#39;lon&#39;, 10)
 
 
-# create variables
+# create variables in the data set
 times = ds.createVariable(&#39;time&#39;, &#39;f4&#39;, (&#39;time&#39;,))
 lats = ds.createVariable(&#39;lat&#39;, &#39;f4&#39;, (&#39;lat&#39;,))
 lons = ds.createVariable(&#39;lon&#39;, &#39;f4&#39;, (&#39;lon&#39;,))
 value = ds.createVariable(&#39;value&#39;, &#39;f4&#39;, (&#39;time&#39;, &#39;lat&#39;, &#39;lon&#39;,))
-value.units = &#39;Unknown&#39;
+value.units = &#39;My Units&#39;
 
-
+# create the main varaibles
 value[0, :, :] = np.random.uniform(0, 100, size=(10, 10))  # unifrom random values
 
 #print(&#39;var size after adding first data&#39;, value.shape)
@@ -234,7 +233,49 @@ xval = np.linspace(0.5, 5.0, 10)
 yval = np.linspace(0.5, 5.0, 10)
 value[1, :, :] = np.array(xval.reshape(-1, 1) + yval)  # linear gradient values
 
-ds.close() # cluse the dataset out in memory</code></pre>
+#ds.close() # cluse the dataset out in memory</code></pre>
+<p>Take a look at the dataset and add the lat and long values.</p>
+<pre class="python"><code>print(ds)
+
+# add the lat and long vals</code></pre>
+<pre><code>## &lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
+## root group (NETCDF4 data model, file format HDF5):
+##     dimensions(sizes): time(2), lat(10), lon(10)
+##     variables(dimensions): float32 time(time), float32 lat(lat), float32 lon(lon), float32 value(time, lat, lon)
+##     groups:</code></pre>
+<pre class="python"><code>ds.variables[&#39;lat&#39;][:] = xval #add lat vals
+ds.variables[&#39;lon&#39;][:] = yval # add long vals
+
+# write out data objects
+lat = ds.variables[&#39;lat&#39;][:]
+lon = ds.variables[&#39;lon&#39;][:]# matrix of longs
+val = ds.variables[&#39;value&#39;][:] 
+
+print(val[0,:,:]) # print the values</code></pre>
+<pre><code>## [[ 2.1377575  22.084284   62.2533     22.024641   69.91982    39.688984
+##    2.3851762  12.815005   65.75899    88.262436  ]
+##  [22.318289   10.20667     4.5640483  56.93332    31.008383   11.959123
+##   47.913174   90.30135    52.6904     32.352974  ]
+##  [51.804893   20.169199   64.84091    63.68504    59.63153    88.18187
+##   23.727264   52.56704    95.53134    33.589764  ]
+##  [95.37581    27.628748   15.569789   60.512245   47.80681    56.301643
+##    6.031743   33.440098   75.298996   88.297714  ]
+##  [25.641838   98.02338    70.41664    78.42542    50.466213   17.85187
+##   42.0194     43.0097     58.317463   82.47617   ]
+##  [71.270485   22.85321    80.51441    79.70689    28.985878   13.839528
+##   68.613976   62.621624   40.651936   88.35382   ]
+##  [85.39447    18.653929   93.72853    65.93935    17.387442   31.970694
+##   30.090927   45.648323   12.283152   27.22876   ]
+##  [ 0.64326406 13.924043   70.52924    15.897576   98.75778     2.7775528
+##   76.07112    28.332666   95.697624   70.28058   ]
+##  [18.850222   35.60857    52.31097     4.6660185  82.49894    63.01342
+##   15.750307   70.06426    80.86734    75.787346  ]
+##  [73.435074   91.73647    94.24214    95.074814   67.69171    61.846424
+##   93.56253    11.40524    43.549107   38.09609   ]]</code></pre>
+<pre class="python"><code>print(lat) # print the lat</code></pre>
+<pre><code>## [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]</code></pre>
+<pre class="python"><code>print(lon) # print the lat</code></pre>
+<pre><code>## [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]</code></pre>
 </div>
 
 
