@@ -108,10 +108,51 @@ print(lat) # print the lat
 print(lon) # print the lat
 ```
 
+
+### 10 August 2021:
+
+
 Now that I know what is needed to create a netcdf4 file I can work on making extracting the necessary varaibles. First I need to make sure that the data from rasterAlign have the same bounderies. I will create a function that crops the matrices to the greatest common dimensions
 
 ```{python}
 
+import glob
+import re
+
+
+# create matrix for storing corner data
+cornerArray = np.empty(shape=(len(alignedRasters),4))
+
+# loop through and extract corner data from the aligned list of rasters
+for i in range(len(alignedRasters)):
+
+    # get meta data for each raster
+    meta = gdal.Info(alignedRasters[i])
+
+    # use regex to extract upper and lower left corners
+    Uleft = re.search(r'Upper Left  \(([^)]+)', meta).group(1)
+    Lright = re.search(r'Lower Right \(([^)]+)', meta).group(1)
+
+    # create full string
+    corners = Uleft + ',' + Lright
+
+    # numeric list of corners (upper left [0-1] and lower right [2-3])
+    cornersList = corners.split(',')
+    cornersList = [ float(x) for x in cornersList ]
+
+    # add corners to an array
+    cornerArray[i,:] = cornersList
+
+
+# find greatest common dimensions to crop rasters to:
+# highest x, lowest y (upper left corner): lowest x, highest y (lower right corner)
+cornersCommon = [np.max(cornerArray[:,0]), np.min(cornerArray[:,1]), np.min(cornerArray[:,2]), np.max(cornerArray[:,3])]
+
+# create the common corners
+#p1 = point upper left of bounding box
+#p2 = point bottom right of bounding box
+p1 = (cornersCommon[0], cornersCommon[1]) 
+p2 = (cornersCommon[2], cornersCommon[3]) #
 
 ```
 
