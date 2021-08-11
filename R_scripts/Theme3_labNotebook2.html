@@ -252,30 +252,284 @@ lon = ds.variables[&#39;lon&#39;][:]# matrix of longs
 val = ds.variables[&#39;value&#39;][:] 
 
 print(val[0,:,:]) # print the values</code></pre>
-<pre><code>## [[ 2.1377575  22.084284   62.2533     22.024641   69.91982    39.688984
-##    2.3851762  12.815005   65.75899    88.262436  ]
-##  [22.318289   10.20667     4.5640483  56.93332    31.008383   11.959123
-##   47.913174   90.30135    52.6904     32.352974  ]
-##  [51.804893   20.169199   64.84091    63.68504    59.63153    88.18187
-##   23.727264   52.56704    95.53134    33.589764  ]
-##  [95.37581    27.628748   15.569789   60.512245   47.80681    56.301643
-##    6.031743   33.440098   75.298996   88.297714  ]
-##  [25.641838   98.02338    70.41664    78.42542    50.466213   17.85187
-##   42.0194     43.0097     58.317463   82.47617   ]
-##  [71.270485   22.85321    80.51441    79.70689    28.985878   13.839528
-##   68.613976   62.621624   40.651936   88.35382   ]
-##  [85.39447    18.653929   93.72853    65.93935    17.387442   31.970694
-##   30.090927   45.648323   12.283152   27.22876   ]
-##  [ 0.64326406 13.924043   70.52924    15.897576   98.75778     2.7775528
-##   76.07112    28.332666   95.697624   70.28058   ]
-##  [18.850222   35.60857    52.31097     4.6660185  82.49894    63.01342
-##   15.750307   70.06426    80.86734    75.787346  ]
-##  [73.435074   91.73647    94.24214    95.074814   67.69171    61.846424
-##   93.56253    11.40524    43.549107   38.09609   ]]</code></pre>
+<pre><code>## [[33.228233  12.947136  78.919014  95.044876  39.76894   85.19597
+##   18.610548   7.52909   82.28265   46.725914 ]
+##  [76.85682   20.597494  13.609841  31.112251   1.3474958 38.273228
+##    6.4907866 45.708344  78.483986  42.60187  ]
+##  [29.548693  79.104774  97.09881   77.044     58.326336  77.73594
+##   24.688324  54.533848  69.24234   13.245239 ]
+##  [92.89089   10.033952  90.5732    13.698646   6.8020363 70.14498
+##   40.10906   51.087097  82.28478   64.18587  ]
+##  [86.19062   72.38861   73.04379   81.25679   57.405827  16.610176
+##   41.00942    5.4083457 95.778694  70.80169  ]
+##  [62.68954   62.744873  33.69918   33.717815  77.13548    9.157264
+##    9.847138  77.77635    8.950343  58.32916  ]
+##  [ 3.0058167  7.7450633 40.875137  62.02006   74.59489   60.944393
+##   18.484842  56.745365  35.54647   17.001646 ]
+##  [96.80365   88.71614   15.704239  65.98958   59.409782  15.542152
+##   21.226385  13.45911   75.097626  30.823753 ]
+##  [64.79478   52.397087  88.86784   99.3868    87.506676  81.36995
+##   47.974823  13.9225235 65.38025   25.138634 ]
+##  [90.79097   15.386426  70.824486  91.337776  14.589559  96.928505
+##   91.01741   90.45811   11.956637  80.63652  ]]</code></pre>
 <pre class="python"><code>print(lat) # print the lat</code></pre>
 <pre><code>## [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]</code></pre>
 <pre class="python"><code>print(lon) # print the lat</code></pre>
 <pre><code>## [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]</code></pre>
+</div>
+<div id="august-2021-1" class="section level3">
+<h3>10 August 2021:</h3>
+<p>Now that I know what is needed to create a netcdf4 file I can work on making extracting the necessary varaibles. First I need to make sure that the data from rasterAlign have the same bounderies. I will create a function that crops the matrices to the greatest common dimensions</p>
+<pre class="python"><code>
+import glob
+import re
+
+
+# create matrix for storing corner data
+cornerArray = np.empty(shape=(len(alignedRasters),4))
+
+# loop through and extract corner data from the aligned list of rasters
+for i in range(len(alignedRasters)):
+
+    # get meta data for each raster
+    meta = gdal.Info(alignedRasters[i])
+
+    # use regex to extract upper and lower left corners
+    Uleft = re.search(r&#39;Upper Left  \(([^)]+)&#39;, meta).group(1)
+    Lright = re.search(r&#39;Lower Right \(([^)]+)&#39;, meta).group(1)
+
+    # create full string
+    corners = Uleft + &#39;,&#39; + Lright
+
+    # numeric list of corners (upper left [0-1] and lower right [2-3])
+    cornersList = corners.split(&#39;,&#39;)
+    cornersList = [ float(x) for x in cornersList ]
+
+    # add corners to an array
+    cornerArray[i,:] = cornersList
+
+
+# find greatest common dimensions to crop rasters to:
+# highest x, lowest y (upper left corner): lowest x, highest y (lower right corner)
+cornersCommon = [np.max(cornerArray[:,0]), np.min(cornerArray[:,1]), np.min(cornerArray[:,2]), np.max(cornerArray[:,3])]
+
+# create the common corners
+#p1 = point upper left of bounding box
+#p2 = point bottom right of bounding box
+p1 = (cornersCommon[0], cornersCommon[1]) 
+p2 = (cornersCommon[2], cornersCommon[3]) #</code></pre>
+<p>Here is a function that trims the aligned rasters to have the same bounderies.</p>
+<pre class="python"><code>import re
+import numpy as np
+from osgeo import gdal
+
+######################################################################################################################
+# DESCRIPTION: raster_trim takes a list of rasters as trims them to the greatest common dimensions
+# and writes out a list of numpy arrays. The last two elements in the list are the greatest common coords
+# for the upper left and lower right corners and the GDAL geotransform output
+#
+# AUTHOR: P. Alexander Burnham
+# 9 August 2021
+#
+# INPUTS:
+# rastList (required): a list of raster objects typically already rescaled by the raster_align function.
+#
+# OUTPUT:
+# A list of trimmed raster matrices with the last two elements as a vector of the greatest common coords
+# for the upper left and lower right corners and the GDAL geotransform output vector
+######################################################################################################################
+
+def raster_trim(rastList=None):
+
+    if rastList is None:
+            print(&quot;Error: No raster list provided! Please pass raster_trim a list of rasters processed by raster_align.&quot;)
+            quit() # exit program and display message when no file names provided
+
+    outList = [] # initialize a list
+
+    # here is where the loop needs to be:
+    for i in range(len(rastList)):
+
+        # these need to be indexed the same way
+        gt = rastList[i].GetGeoTransform()
+        band = rastList[i].GetRasterBand(1)
+
+        # create matrix for storing corner data
+        cornerArray = np.empty(shape=(len(rastList),4))
+
+        # loop through and extract corner data
+        for i in range(len(rastList)):
+
+            # get meta data for each raster
+            meta = gdal.Info(rastList[i])
+
+            # use regex to extract upper and lower left corners
+            Uleft = re.search(r&#39;Upper Left  \(([^)]+)&#39;, meta).group(1)
+            Lright = re.search(r&#39;Lower Right \(([^)]+)&#39;, meta).group(1)
+
+            # create full string
+            corners = Uleft + &#39;,&#39; + Lright
+
+            # numeric list of corners (upper left [0-1] and lower right [2-3])
+            cornersList = corners.split(&#39;,&#39;)
+            cornersList = [ float(x) for x in cornersList ]
+
+            # add corners to an array
+            cornerArray[i,:] = cornersList
+
+        # find greatest common dimensions to crop rasters to:
+        # highest x, lowest y (upper left corner): lowest x, highest y (lower right corner)
+        cornersCommon = [np.max(cornerArray[:,0]), np.min(cornerArray[:,1]), np.min(cornerArray[:,2]), np.max(cornerArray[:,3])]
+
+        #p1 = point upper left of bounding box
+        #p2 = point bottom right of bounding box
+        p1 = (cornersCommon[0], cornersCommon[1])
+        p2 = (cornersCommon[2], cornersCommon[3])
+
+        # get pixel sizes and the lower left of the raster
+        xinit = gt[0]
+        yinit = gt[3]
+        xsize = gt[1]
+        ysize = gt[5]
+
+        # get row and columns
+        row1 = int((p1[1] - yinit)/ysize)
+        col1 = int((p1[0] - xinit)/xsize)
+        row2 = int((p2[1] - yinit)/ysize)
+        col2 = int((p2[0] - xinit)/xsize)
+
+        # trim the matrix
+        dataLayer = band.ReadAsArray(col1, row1, col2 - col1, row2 - row1)
+
+        # append the data layers to the list
+        outList.append(dataLayer)
+
+        ###################################################################################################
+
+    # add the common coords and geotransform data
+    outList.append(cornersCommon)
+    outList.append(gt)
+
+    return outList</code></pre>
+</div>
+<div id="august-2021-2" class="section level3">
+<h3>11 August 2021:</h3>
+<p>The goal is to finish the code I have been working on to create a netCDF4 cube from a set of rasters and package into functions.</p>
+<p>This function pulls the coordinates from the aligned and trimmed rasters</p>
+<pre class="python"><code>import numpy as np
+from osgeo import gdal
+
+######################################################################################################################
+# DESCRIPTION: get_coords takes in a list of trimmed raster layers from raster_trim
+# and returns a list of lat and long coords
+#
+# AUTHOR: P. Alexander Burnham
+# 10 August 2021
+#
+# INPUTS:
+# trimmedRasts (required): a list of trimmed raster arrays from raster_trim
+#
+# OUTPUT:
+# A list with the first element as a vector of lats and the second a vector of lons
+######################################################################################################################
+
+def get_coords(trimmedRasts=None):
+
+    if trimmedRasts is None:
+            print(&quot;Error: No raster list provided! Please pass get_coords a list of rasters processed by taster_trim.&quot;)
+            quit() # exit program and display message when no file names provided
+
+    ###################################################################################################
+
+    outList = []
+
+    # get the necessary structures from the object
+    data = trimmedRasts[0]
+    gt = trimmedRasts[-1]
+    cornersCommon = trimmedRasts[-2]
+
+    # pull out pixel size
+    xsize = gt[1]
+    ysize = gt[5]
+
+    # get data mat dimensions
+    width = len(data[0,:])
+    height = len(data[:,0])
+
+    # get lower left corner of clipped matrix
+    ylow = cornersCommon[0]
+    xlow = cornersCommon[3]
+
+    # dimensions from 0 to max dims of dataset
+    mx=np.arange(start=0, stop=width)
+    my=np.arange(start=0, stop=height)
+
+    # get lats and longs
+    longVec = np.multiply(mx, xsize) + xlow # longitude vector
+    latVec = np.multiply(my, ysize) + ylow # latitude vector
+
+    outList.append(latVec)
+    outList.append(longVec)
+
+    return outList
+
+    ###################################################################################################</code></pre>
+<p>This function takes in the coords and the trimmed and aligned rasters and writes out a netCDF4 dataset.</p>
+<pre class="python"><code>
+
+import netCDF4 as nc
+import numpy as np
+from osgeo import gdal
+
+######################################################################################################################
+# DESCRIPTION: write_cube writes out a .nc file from the input of the raster_trim function and
+# creates a netCDF4 dataset as a side effect
+#
+# AUTHOR: P. Alexander Burnham
+# 11 August 2021
+#
+# INPUTS:
+# rastList (required): a list of trimmed raster arrays from raster_trim
+# yCoords: a vector for all of the y coordinates (lats)
+# xCoords: a vector for all of the x coordinates (lons)
+# fileName: a character string for the path and file name of the .nc file
+#
+# OUTPUT:
+# It outputs a netCDF4 dataset and writes a .nc file to disk
+######################################################################################################################
+
+def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
+
+    if rastList is None:
+                print(&quot;Error: No raster list provided! Please pass write_cube a list of rasters processed by raster_trim.&quot;)
+                quit() # exit program and display message when no file names provided
+
+    data = rastList[: len(rastList) - 2]
+
+    ds = nc.Dataset(fileName, &#39;w&#39;, format=&#39;NETCDF4&#39;)
+
+    # inmtialize vars by creating dimensions (long=X)
+    time = ds.createDimension(&#39;time&#39;, None) # no time var in this case
+    lat = ds.createDimension(&#39;lat&#39;, len(yCoords))
+    lon = ds.createDimension(&#39;lon&#39;, len(xCoords))
+
+    # create variables in the data set
+    times = ds.createVariable(&#39;time&#39;, &#39;f4&#39;, (&#39;time&#39;,))
+    lats = ds.createVariable(&#39;lat&#39;, &#39;f4&#39;, (&#39;lat&#39;,))
+    lons = ds.createVariable(&#39;lon&#39;, &#39;f4&#39;, (&#39;lon&#39;,))
+    value = ds.createVariable(&#39;value&#39;, &#39;f4&#39;, (&#39;time&#39;, &#39;lat&#39;, &#39;lon&#39;,))
+    value.units = &#39;My Units&#39;
+
+    # create the main variables
+    value[0:len(data), :, :] = data
+
+    ds.variables[&#39;lat&#39;][:] = yCoords #add lat vals
+    ds.variables[&#39;lon&#39;][:] = xCoords # add long vals
+
+    return ds
+
+    ds.close() # cluse the dataset out in memory
+</code></pre>
 </div>
 
 
