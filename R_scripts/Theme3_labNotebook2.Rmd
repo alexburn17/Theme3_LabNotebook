@@ -1,0 +1,42 @@
+---
+title: "Theme 3 Lab Notebook Volume 3"
+output: html_document
+---
+
+### Description:
+
+Date created:  9 August 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+### 9 August 2021:
+
+Here I load the GDAL library in python, read in raster files and figure out how to use the package to access the raster data.
+
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda 3.7 environment
+use_condaenv(condaenv = "Python37Env", conda = "auto", required = FALSE)
+
+
+```
+
+Make sure my 3.7 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.7 is laoded
+print(platform.python_version())
+```
+
+```{python}
+
+```
+
