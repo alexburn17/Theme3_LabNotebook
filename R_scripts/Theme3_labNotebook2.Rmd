@@ -452,5 +452,12 @@ plt.show()
 
 ```
 
+### 12 August 2021:
 
+Next step, test plot the netCDF4 object on a map to make sure everything is propperly aligned.
+
+```{python}
+
+
+```
 
