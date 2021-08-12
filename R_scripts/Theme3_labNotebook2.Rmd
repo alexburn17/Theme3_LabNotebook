@@ -390,3 +390,56 @@ def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
 
 
 ```
+
+Here I write up a driver to test out these function.
+
+```{python}
+import glob
+import re
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+from rasterAlign import *
+from rasterTrim import *
+from getCoords import *
+from cuberator import *
+
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/geospatialData/"
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+"*.tif")
+
+# call the raster align function 4326 vs 3857 nonVal SRS resolution
+alignedRasters = raster_align(rastNames=dataPaths, noneVal=-1)
+
+# call the raster trim function which trims all data sets and creates list of matrices
+# including the common dimensions list and the geotransform vector
+trimmedRasters = raster_trim(alignedRasters)
+
+# get x and y coordinates for the aligned and trimmed rasters
+# index 0 is lat and index 1 is long
+rasterCoords = get_coords(trimmedRasters)
+
+
+
+
+
+# Write out the cube
+###################################################################################################
+
+# initialize file name
+fn = '/Users/pburnham/Documents/GitHub/Theme3_Burnham_Private/Theme3_PythonProjects/Python37Theme3/test1.nc'
+
+
+ds = write_cube(rastList=trimmedRasters, yCoords=rasterCoords[0], xCoords=rasterCoords[1], fileName=fn)
+
+val = ds.variables['value'][:]
+print(val[:,:,:]) # print the values
+
+```
+
+
+

@@ -252,26 +252,26 @@ lon = ds.variables[&#39;lon&#39;][:]# matrix of longs
 val = ds.variables[&#39;value&#39;][:] 
 
 print(val[0,:,:]) # print the values</code></pre>
-<pre><code>## [[33.228233  12.947136  78.919014  95.044876  39.76894   85.19597
-##   18.610548   7.52909   82.28265   46.725914 ]
-##  [76.85682   20.597494  13.609841  31.112251   1.3474958 38.273228
-##    6.4907866 45.708344  78.483986  42.60187  ]
-##  [29.548693  79.104774  97.09881   77.044     58.326336  77.73594
-##   24.688324  54.533848  69.24234   13.245239 ]
-##  [92.89089   10.033952  90.5732    13.698646   6.8020363 70.14498
-##   40.10906   51.087097  82.28478   64.18587  ]
-##  [86.19062   72.38861   73.04379   81.25679   57.405827  16.610176
-##   41.00942    5.4083457 95.778694  70.80169  ]
-##  [62.68954   62.744873  33.69918   33.717815  77.13548    9.157264
-##    9.847138  77.77635    8.950343  58.32916  ]
-##  [ 3.0058167  7.7450633 40.875137  62.02006   74.59489   60.944393
-##   18.484842  56.745365  35.54647   17.001646 ]
-##  [96.80365   88.71614   15.704239  65.98958   59.409782  15.542152
-##   21.226385  13.45911   75.097626  30.823753 ]
-##  [64.79478   52.397087  88.86784   99.3868    87.506676  81.36995
-##   47.974823  13.9225235 65.38025   25.138634 ]
-##  [90.79097   15.386426  70.824486  91.337776  14.589559  96.928505
-##   91.01741   90.45811   11.956637  80.63652  ]]</code></pre>
+<pre><code>## [[66.28365   54.500298  84.39566   77.88653   69.17259   91.24257
+##   92.986115  51.86957   63.87897   10.889227 ]
+##  [34.290417   1.2227645 70.55938   95.68176   60.122147  48.76603
+##   88.59167   97.15465   47.253403  92.247246 ]
+##  [99.04353   39.568745  45.564938   9.635762  28.270191  59.71637
+##   45.091473  18.683565  78.87714   32.371223 ]
+##  [93.98085    4.0269666 97.18161   20.591864  37.31289   88.27993
+##   39.163918  90.99917   81.22277   99.43379  ]
+##  [11.603286  62.4644    43.014843  40.65383   19.53519   45.084522
+##   58.745552  73.272964  76.25967   38.712017 ]
+##  [23.156883  38.570282  23.89096   36.59735   50.170437  72.38856
+##   15.3421    29.151161   4.7073536 26.406685 ]
+##  [54.85107   19.227602  86.09105    3.1639264 43.335323  40.93114
+##   71.55214   76.757645  88.248184  39.9543   ]
+##  [58.26575   43.000393  70.135216  66.35249   18.916273  47.399998
+##    3.4087994 50.11202    4.1291757 24.058529 ]
+##  [87.87888   48.653706  51.56603   86.76514    1.4410611 59.965324
+##   53.354435   4.597037  72.82413   66.935905 ]
+##  [16.178434  56.632767   9.868351  44.54826    2.767101  93.36939
+##   91.51353   20.088518  48.34713   55.280773 ]]</code></pre>
 <pre class="python"><code>print(lat) # print the lat</code></pre>
 <pre><code>## [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]</code></pre>
 <pre class="python"><code>print(lon) # print the lat</code></pre>
@@ -530,6 +530,74 @@ def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
 
     ds.close() # cluse the dataset out in memory
 </code></pre>
+<p>Here I write up a driver to test out these function.</p>
+<pre class="python"><code>import glob
+import re
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+from rasterAlign import *
+from rasterTrim import *
+from getCoords import *
+from cuberator import *
+
+
+
+# set my absolute directory path for where the data are
+direc =&quot;/Users/pburnham/Documents/geospatialData/&quot;
+
+# create a list of all raster files that end in .tif
+dataPaths = glob.glob(direc+&quot;*.tif&quot;)
+
+# call the raster align function 4326 vs 3857 nonVal SRS resolution
+alignedRasters = raster_align(rastNames=dataPaths, noneVal=-1)
+
+# call the raster trim function which trims all data sets and creates list of matrices
+# including the common dimensions list and the geotransform vector
+trimmedRasters = raster_trim(alignedRasters)
+
+# get x and y coordinates for the aligned and trimmed rasters
+# index 0 is lat and index 1 is long
+rasterCoords = get_coords(trimmedRasters)
+
+
+
+
+
+# Write out the cube
+###################################################################################################
+
+# initialize file name
+fn = &#39;/Users/pburnham/Documents/GitHub/Theme3_Burnham_Private/Theme3_PythonProjects/Python37Theme3/test1.nc&#39;
+
+
+ds = write_cube(rastList=trimmedRasters, yCoords=rasterCoords[0], xCoords=rasterCoords[1], fileName=fn)
+
+val = ds.variables[&#39;value&#39;][:]
+print(val[:,:,:]) # print the values</code></pre>
+<pre><code>## [[[-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   ...
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]]
+## 
+##  [[-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   ...
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]]
+## 
+##  [[-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   ...
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]
+##   [-1. -1. -1. ... -1. -1. -1.]]]</code></pre>
 </div>
 
 
