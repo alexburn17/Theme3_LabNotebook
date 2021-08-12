@@ -439,6 +439,17 @@ ds = write_cube(rastList=trimmedRasters, yCoords=rasterCoords[0], xCoords=raster
 val = ds.variables['value'][:]
 print(val[:,:,:]) # print the values
 
+
+
+# plot to see of they are properly aligned
+im = plt.imshow(val[0,:,:], cmap='hot', interpolation='nearest')
+plt.show()
+
+# plot to see of they are properly aligned
+im = plt.imshow(val[1,:,:], cmap='hot', interpolation='nearest')
+plt.show()
+
+
 ```
 
 
