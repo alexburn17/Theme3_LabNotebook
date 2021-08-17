@@ -34,18 +34,17 @@ def get_coords(trimmedRasts=None):
     # pull out pixel size
     xsize = gt[1]
     ysize = gt[5]
-    print(xsize, ysize)
+
 
     # get data mat dimensions
     width = len(data[0,:])
     height = len(data[:,0])
-    print(width, height)
+
 
     # get lower left corner of clipped matrix
     ylow = cornersCommon[1]
     xlow = cornersCommon[0]
-    print(cornersCommon)
-    print(ylow, xlow)
+
 
     # dimensions from 0 to max dims of dataset
     my=np.arange(start=0, stop=height)
@@ -56,8 +55,6 @@ def get_coords(trimmedRasts=None):
     longVec = np.multiply(mx, xsize) + xlow # longitude vector
     latVec = np.multiply(my, ysize) + ylow # latitude vector
 
-    print(longVec)
-    print(latVec)
 
     outList.append(latVec)
     outList.append(longVec)
