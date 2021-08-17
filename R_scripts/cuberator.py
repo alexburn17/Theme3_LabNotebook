@@ -30,10 +30,9 @@ def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
     ds = nc.Dataset(fileName, 'w', format='NETCDF4')
 
     # inmtialize vars by creating dimensions (long=X)
-    time = ds.createDimension('time', None) # no time var in this case
+    time = ds.createDimension('time', len(data)) # no time var in this case
     lat = ds.createDimension('lat', len(yCoords))
     lon = ds.createDimension('lon', len(xCoords))
-
 
     # create variables in the data set
     times = ds.createVariable('time', 'f4', ('time',))
@@ -42,13 +41,13 @@ def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
     value = ds.createVariable('value', 'f4', ('time', 'lat', 'lon',))
     value.units = 'My Units'
 
-    # create the main variables
-    value[0:len(data), :, :] = data
 
+    # create the main variables
+    ds.variables['value'][0:len(data)] = data
     ds.variables['lat'][:] = yCoords #add lat vals
     ds.variables['lon'][:] = xCoords # add long vals
 
     return ds
 
-    ds.close() # cluse the dataset out in memory
+    ds.close() # close the dataset out in memory
 

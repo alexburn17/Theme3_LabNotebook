@@ -1,95 +1,61 @@
-import re
-import numpy as np
 from osgeo import gdal
+import glob
+import numpy as np
 
 ######################################################################################################################
-# DESCRIPTION: raster_trim takes a list of rasters as trims them to the greatest common dimensions
-# and writes out a list of numpy arrays. The last two elements in the list are the greatest common coords
-# for the upper left and lower right corners and the GDAL geotransform output
+# DESCRIPTION: This function called raster_align takes a list of raster names, loads the rasters
+# into memory and ensures they have the same aligned structure with the correct SRS codes and consitant resolutions
 #
 # AUTHOR: P. Alexander Burnham
-# 9 August 2021
+# 5 August 2021
 #
 # INPUTS:
-# rastList (required): a list of raster objects typically already rescaled by the raster_align function.
+# rastNames (required): a list or array of file names including the required path if in another directory.
+# resolution: the pixel dimensions to be used for all rasters. Defaults to the largest common pixel size
+# SRS: this is the SRS code that sets the units and geospatial scale. Defaults to EPSG:3857 like google maps
+# noneVal: the value to be used for pixels in the raster that contain no value. Defaults to -9999
 #
 # OUTPUT:
-# A list of trimmed raster matrices with the last two elements as a vector of the greatest common coords
-# for the upper left and lower right corners and the GDAL geotransform output vector
+# It outputs a list of rescaled and gepspatialy aligned rasters
 ######################################################################################################################
+def raster_align(rastNames=None, resolution=None, SRS=3857, noneVal=-9999):
 
-def raster_trim(rastList=None):
+    if rastNames is None:
+        print("Error: No file list provided! Please pass raster_align a list of raster file names.")
+        quit() # exit program and display message when no file names provided
 
-    if rastList is None:
-            print("Error: No raster list provided! Please pass raster_trim a list of rasters processed by raster_align.")
-            quit() # exit program and display message when no file names provided
+    # define the espg code as a character for GDAL
+    SRS_code = "EPSG:" + str(SRS)
 
+    timeList = len(rastNames) # time dimension for list
 
-    outList = [] # initialize a list
+    # initialize a mat to store files in during the loop and one to store the modification
+    dataMat = [[0] * 3 for i in range(timeList)]
 
-    # here is where the loop needs to be:
-    for i in range(len(rastList)):
+    # create a list of rasters in first column
+    for t in range(0, timeList):
+        dataMat[0][t] = gdal.Open(rastNames[t])
 
-        # these need to be indexed the same way
-        gt = rastList[i].GetGeoTransform()
-        band = rastList[i].GetRasterBand(1)
+    # if resolution is not provided, default to the greatest common resolution
+    if resolution is None:
+        # get greatest common dimension
+        for j in range(0, timeList):
 
-        # create matrix for storing corner data
-        cornerArray = np.empty(shape=(len(rastList),4))
+            # put on same scale based on the SRS code to get consistant resolution values
+            temp = gdal.Warp('', dataMat[0][j], dstSRS=SRS_code, format='VRT')
+            dataMat[1][j] = temp.GetGeoTransform()[1]
 
-        # loop through and extract corner data
-        for i in range(len(rastList)):
+        temp=None # flush from disk
 
-            # get meta data for each raster
-            meta = gdal.Info(rastList[i])
+        # get max resolution value
+        resolution = np.max(dataMat[1][:])
 
-            # use regex to extract upper and lower left corners
-            Uleft = re.search(r'Upper Left  \(([^)]+)', meta).group(1)
-            Lright = re.search(r'Lower Right \(([^)]+)', meta).group(1)
+    # do transformation and alingnment
+    for i in range(0, timeList):
+        dataMat[2][i] = gdal.Warp('', dataMat[0][i], targetAlignedPixels=True, dstSRS=SRS_code, format='VRT',
+        outputType=gdal.GDT_Int16, xRes=resolution, yRes=-resolution, dstNodata=noneVal)
 
-            # create full string
-            corners = Uleft + ',' + Lright
-
-            # numeric list of corners (upper left [0-1] and lower right [2-3])
-            cornersList = corners.split(',')
-            cornersList = [ float(x) for x in cornersList ]
-
-            # add corners to an array
-            cornerArray[i,:] = cornersList
-
-        # find greatest common dimensions to crop rasters to:
-        # highest x, lowest y (upper left corner): lowest x, highest y (lower right corner)
-        cornersCommon = [np.max(cornerArray[:,0]), np.min(cornerArray[:,1]), np.min(cornerArray[:,2]), np.max(cornerArray[:,3])]
-
-
-        #p1 = point upper left of bounding box
-        #p2 = point bottom right of bounding box
-        p1 = (cornersCommon[0], cornersCommon[1])
-        p2 = (cornersCommon[2], cornersCommon[3])
-
-
-        # get pixel sizes and the lower left of the raster
-        xinit = gt[0]
-        yinit = gt[3]
-        xsize = gt[1]
-        ysize = gt[5]
-
-        # get row and columns
-        row1 = int((p1[1] - yinit)/ysize)
-        col1 = int((p1[0] - xinit)/xsize)
-        row2 = int((p2[1] - yinit)/ysize)
-        col2 = int((p2[0] - xinit)/xsize)
-
-        # trim the matrix
-        dataLayer = band.ReadAsArray(col1, row1, col2 - col1, row2 - row1)
-
-        # append the data layers to the list
-        outList.append(dataLayer)
-
-        ###################################################################################################
-
-    # add the common coords and geotransform data
-    outList.append(cornersCommon)
-    outList.append(gt)
-
-    return outList
+    return dataMat[2][:]
+######################################################################################################################
+# END FUNCTION
+######################################################################################################################

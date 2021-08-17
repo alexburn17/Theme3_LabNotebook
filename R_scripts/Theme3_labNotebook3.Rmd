@@ -1,0 +1,181 @@
+---
+title: "Theme 3 Lab Notebook Volume 4"
+output: html_document
+---
+
+### Description:
+
+Date created:  15 August 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+
+Load in conda env:
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda 3.7 environment
+use_condaenv(condaenv = "Python37Env", conda = "auto", required = FALSE)
+
+
+```
+
+Make sure my 3.7 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.7 is laoded
+print(platform.python_version())
+```
+
+
+### 16 August 2021:
+
+After going through the code from the previous week, I found some solutions to problems I was encountering in the functions.
+
+**Problem 1:** When switching EPSG codes, I would encounter problems with trimmed matrices having different dimensions. In an N x M matrix, both dims would only vary by +/- 1 so I assume it was a rounding error somewhere. This problem was not present when dealing with ESPG codes that used meters but rather those that utilized degrees with many decimal places.
+
+**Solution 1:** Bounding dimensions were converted to integers too early as additional calculations were conducted downstream. I resorted to floating point math, storing results in a nupmpy array and converting the array to integers at the last stage. GDALs python binding is not happy with numpy integers so they had to be converted to base integers using int(). A more elegant solution would be nice but this works. Now rounding errors are resolved and matrices come out trimmed to exactly the same dims.
+
+**Problem 2:** The loop included code that did not need to be looped through causing some calculations to be done i times when they were constants. 
+
+**Solution 2:** Adjusted loops to include only what is needed and double checked for efficiency  
+
+
+Here is the adjusted function, raster_trim that now works on multiple ESPG codes.
+```{python, evaluate=FALSE}
+
+import netCDF4 as nc
+import numpy as np
+from osgeo import gdal
+
+######################################################################################################################
+# DESCRIPTION: write_cube writes out a .nc file from the input of the raster_trim function and
+# creates a netCDF4 dataset as a side effect
+#
+# AUTHOR: P. Alexander Burnham
+# 11 August 2021
+# last update: 16 August 2021
+#
+# INPUTS:
+# rastList (required): a list of trimmed raster arrays from raster_trim
+# yCoords: a vector for all of the y coordinates (lats)
+# xCoords: a vector for all of the x coordinates (lons)
+# fileName: a character string for the path and file name of the .nc file
+#
+# OUTPUT:
+# It outputs a netCDF4 dataset and writes a .nc file to disk
+######################################################################################################################
+
+def write_cube(rastList=None, yCoords=None, xCoords=None, fileName=None):
+
+    if rastList is None:
+                print("Error: No raster list provided! Please pass write_cube a list of rasters processed by raster_trim.")
+                quit() # exit program and display message when no file names provided
+
+    data = rastList[: len(rastList) - 2]
+
+    ds = nc.Dataset(fileName, 'w', format='NETCDF4')
+
+    # inmtialize vars by creating dimensions (long=X)
+    time = ds.createDimension('time', len(data)) # no time var in this case
+    lat = ds.createDimension('lat', len(yCoords))
+    lon = ds.createDimension('lon', len(xCoords))
+
+    # create variables in the data set
+    times = ds.createVariable('time', 'f4', ('time',))
+    lats = ds.createVariable('lat', 'f4', ('lat',))
+    lons = ds.createVariable('lon', 'f4', ('lon',))
+    value = ds.createVariable('value', 'f4', ('time', 'lat', 'lon',))
+    value.units = 'My Units'
+
+
+    # create the main variables
+    ds.variables['value'][0:len(data)] = data
+    ds.variables['lat'][:] = yCoords #add lat vals
+    ds.variables['lon'][:] = xCoords # add long vals
+
+    return ds
+
+    ds.close() # close the dataset out in memory
+
+```
+
+
+
+```{python, evaluate=FALSE}
+import numpy as np
+from osgeo import gdal
+
+######################################################################################################################
+# DESCRIPTION: get_coords takes in a list of trimmed raster layers from raster_trim
+# and returns a list of lat and long coords
+#
+# AUTHOR: P. Alexander Burnham
+# 10 August 2021
+# last update: 16 August 2021
+#
+# INPUTS:
+# trimmedRasts (required): a list of trimmed raster arrays from raster_trim
+#
+# OUTPUT:
+# A list with the first element as a vector of lats and the second a vector of lons
+######################################################################################################################
+
+def get_coords(trimmedRasts=None):
+
+    if trimmedRasts is None:
+            print("Error: No raster list provided! Please pass get_coords a list of rasters processed by taster_trim.")
+            quit() # exit program and display message when no file names provided
+
+    ###################################################################################################
+
+    outList = []
+
+    # get the necessary structures from the object
+    data = trimmedRasts[0]
+    gt = trimmedRasts[-1]
+    cornersCommon = trimmedRasts[-2]
+
+    # pull out pixel size
+    xsize = gt[1]
+    ysize = gt[5]
+    print(xsize, ysize)
+
+    # get data mat dimensions
+    width = len(data[0,:])
+    height = len(data[:,0])
+    print(width, height)
+
+    # get lower left corner of clipped matrix
+    ylow = cornersCommon[1]
+    xlow = cornersCommon[0]
+    print(cornersCommon)
+    print(ylow, xlow)
+
+    # dimensions from 0 to max dims of dataset
+    my=np.arange(start=0, stop=height)
+    mx=np.arange(start=0, stop=width)
+
+
+    # get lats and longs
+    longVec = np.multiply(mx, xsize) + xlow # longitude vector
+    latVec = np.multiply(my, ysize) + ylow # latitude vector
+
+    print(longVec)
+    print(latVec)
+
+    outList.append(latVec)
+    outList.append(longVec)
+
+    return outList
+
+    ###################################################################################################
+
+```

@@ -7,6 +7,7 @@ from osgeo import gdal
 #
 # AUTHOR: P. Alexander Burnham
 # 10 August 2021
+# last update: 16 August 2021
 #
 # INPUTS:
 # trimmedRasts (required): a list of trimmed raster arrays from raster_trim
@@ -33,22 +34,30 @@ def get_coords(trimmedRasts=None):
     # pull out pixel size
     xsize = gt[1]
     ysize = gt[5]
+    print(xsize, ysize)
 
     # get data mat dimensions
     width = len(data[0,:])
     height = len(data[:,0])
+    print(width, height)
 
     # get lower left corner of clipped matrix
-    ylow = cornersCommon[0]
-    xlow = cornersCommon[3]
+    ylow = cornersCommon[1]
+    xlow = cornersCommon[0]
+    print(cornersCommon)
+    print(ylow, xlow)
 
     # dimensions from 0 to max dims of dataset
-    mx=np.arange(start=0, stop=width)
     my=np.arange(start=0, stop=height)
+    mx=np.arange(start=0, stop=width)
+
 
     # get lats and longs
     longVec = np.multiply(mx, xsize) + xlow # longitude vector
     latVec = np.multiply(my, ysize) + ylow # latitude vector
+
+    print(longVec)
+    print(latVec)
 
     outList.append(latVec)
     outList.append(longVec)
