@@ -1,0 +1,115 @@
+---
+title: "Theme 3 Lab Notebook Volume 6"
+output: html_document
+---
+
+### Description:
+
+Date created:  1 September 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+
+Load in conda env:
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda environment
+use_condaenv(condaenv = "myCondaEnvironment", conda = "auto", required = FALSE)
+
+```
+
+Make sure my 3.9 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+```
+
+
+
+```{python}
+
+import glob
+import numpy as np
+import h5py
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+import csv
+import seaborn as sns
+
+import os
+os.environ["PROJ_LIB"] = r'C:\Users\pburnham\Anaconda3\envs\env\Library\share (location of epsg)'
+#os.environ["PROJ_LIB"] = '/opt/anaconda3/pkgs/proj4-5.2.0-h6de7cb9_1006/share/proj/epsg'
+
+from mpl_toolkits.basemap import Basemap
+import matplotlib.animation as ani
+
+
+# set my absolute directory path for where the data are
+direc ="/Users/pburnham/Documents/GitHub/Theme3_LabNotebook/R_scripts/data/dayLength/"
+
+# create a list of all .nc4 files in my data folder that are day length data
+dataPaths = glob.glob(direc+"dayl*.nc4")
+
+# Extract data set
+ds=nc.Dataset(dataPaths[0])
+
+# extract vars
+lat = ds.variables['lat'][:] # matrix of lats
+lon = ds.variables['lon'][:]# matrix of longs
+time = ds.variables['time'][:] # list of codes for 365 days
+dayl = ds.variables['dayl'][:] # this is a list of matrices one for each day of the year
+
+
+
+
+def animate_heat_map():
+
+    fig = plt.figure()
+
+    nx = lat.shape[0]
+    ny = lat.shape[1]
+
+    dataInit = np.zeros((nx,ny))
+
+    def init():
+
+        plt.clf()
+
+        map = Basemap(projection='merc',llcrnrlon=-165.,llcrnrlat=15.,urcrnrlon=-150.,urcrnrlat=25.,resolution='i')
+        x,y = map(lon, lat)
+        dl = map.contourf(x, y, dataInit)
+
+    def animate(i):
+
+        plt.clf()
+
+        map = Basemap(projection='merc',llcrnrlon=-165.,llcrnrlat=15.,urcrnrlon=-150.,urcrnrlat=25.,resolution='i')
+        x,y = map(lon, lat)
+        dl = map.contourf(x, y, dayl[i,:,:])
+
+    anim = ani.FuncAnimation(fig, animate, init_func=init, interval=1, frames=len(time))
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    animate_heat_map()
+
+
+
+```
+
+
+
+
+
+
