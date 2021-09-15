@@ -14,5 +14,6 @@ Here I document the team's progress on Theme 3. Notebooks are broken down into v
 
 [Lab Notebook Volume 5 (24 August 2021-31 August 2021)](R_scripts/Theme3_labNotebook4.html)
 
-[Lab Notebook Volume 6 (1 September 2021-present)](R_scripts/Theme3_labNotebook5.html)
+[Lab Notebook Volume 6 (1 September 2021-8 September 2021)](R_scripts/Theme3_labNotebook5.html)
 
+[Lab Notebook Volume 7 (12 September 2021-present)](R_scripts/Theme3_labNotebook6.html)

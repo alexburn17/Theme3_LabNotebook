@@ -1,0 +1,135 @@
+---
+title: "Theme 3 Lab Notebook Volume 6"
+output: html_document
+---
+
+### Description:
+
+Date created:  12 September 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+
+Load in conda env:
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda environment
+use_condaenv(condaenv = "myCondaEnvironment", conda = "auto", required = FALSE)
+
+```
+
+Make sure my 3.9 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+```
+
+
+
+```{python}
+
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+import netCDF4 as nc
+import csv
+import seaborn as sns
+
+import os
+os.environ["PROJ_LIB"] = r'C:\Users\pburnham\Anaconda3\envs\env\Library\share (location of epsg)'
+#os.environ["PROJ_LIB"] = '/opt/anaconda3/pkgs/proj4-5.2.0-h6de7cb9_1006/share/proj/epsg'
+
+from mpl_toolkits.basemap import Basemap
+import matplotlib.animation as ani
+
+```
+
+
+
+
+### Spetember 12, 2021
+
+A simple function for conducted mathematical operations on cubes, mats, vecs and scalers.This function takes a user specified number of keyword arguments (i.e a = array1, b = scaler1 ... etc.). eq is a char string equation utilizing the variables named previously. (i.e. eq = "a ** b").
+
+```{python}
+
+def cube_smasher(eq = None, **kwarg): 
+
+    y = eval(eq, kwarg)
+
+    return y
+
+```
+
+
+Here I am testing out this function with some small scale arrays.
+
+Set up test stuctures:
+```{python}
+
+# 2x2x2 array of threes
+arr = np.full((2,2,2), 3)
+# 2x2 matrix of twos
+mat = np.full((2,2), 2)
+# 2x1 vector of fours
+vec = np.full((2), 4)
+# scaler value of five
+scaler = np.full((1), 5)
+```
+
+Testing cube multiplied by matrix
+```{python}
+obj = cube_smasher(eq= "(a * b)", a=arr, b=mat)
+print(obj)
+
+```
+
+Testing cube multiplied by vector
+```{python}
+obj1 = cube_smasher(eq= "(a * b)", a=arr, b=vec)
+print(obj1)
+
+```
+
+Testing cube multiplied by scaler
+```{python}
+obj2 = cube_smasher(eq= "(a * b)", a=arr, b=scaler)
+print(obj2)
+
+```
+
+
+Test the function on larger data set
+```{python}
+
+# set my absolute directory path for where the data are
+direc = "/Users/pburnham/Documents/geospatialData/Carya_ovata/treeK.nc"
+
+# Extract data set
+ds=nc.Dataset(direc)
+val = ds.variables['value'][:]
+
+
+obj3 = cube_smasher(eq= "(a * b)", a=val, b=val)
+print(obj3)
+
+```
+
+
+In the future, I need to include two important functions. 1) Conduct operations on structures of different scales by rescaling automatically as was done for creating aligned netCDF4 structures to begin with. 2) pass functions into cube_smasher so that cubes can be variables in more complex mathematical operations.
+
+```{python}
+
+
+```
+
+
