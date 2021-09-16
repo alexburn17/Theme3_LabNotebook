@@ -1,5 +1,5 @@
 ---
-title: "Theme 3 Lab Notebook Volume 6"
+title: "Theme 3 Lab Notebook Volume 7"
 output: html_document
 ---
 
@@ -128,8 +128,39 @@ print(obj3)
 In the future, I need to include two important functions. 1) Conduct operations on structures of different scales by rescaling automatically as was done for creating aligned netCDF4 structures to begin with. 2) pass functions into cube_smasher so that cubes can be variables in more complex mathematical operations.
 
 ```{python}
+# here we introduce passing alternate functions and keyword arguements associated with them into the function as an option.
+
+def cube_smasher(function = None, eq = None, **kwarg): # eq = None
+
+    if function == None:
+
+        y = eval(eq, kwarg)
+
+    if eq == None:
+
+        y = function(**kwarg)
+
+    return y
 
 
 ```
 
+
+
+Here I try to pass a few different functions and their parms in to operate on cube structures,
+
+```{python}
+
+# create some 3d arrays
+arr = np.full((10,10,10), 3)
+arr1 = np.full((10,10,10), 5)
+arr2 = np.full((10,10,10), 2)
+
+# call cube smasher with the mean function
+obj = cube_smasher(np.mean, a=[arr, arr1, arr2], axis = 0)
+
+print(obj.shape)
+print(obj)
+
+```
 
