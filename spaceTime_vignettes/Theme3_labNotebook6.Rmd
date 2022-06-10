@@ -1,0 +1,49 @@
+---
+title: "Theme 3 Lab Notebook Volume 7"
+output: html_document
+---
+
+### Description:
+
+Date created:  12 September 2021           
+Author: P. Alexander Burnham
+
+**Summary** This document follows my progress on Theme 3 in order to provide a location for me and other members of the team to keep track of this work and maintain annotated description and functioning examples of previous iterations and related vignettes. 
+
+
+
+Load in conda env:
+```{r setup, include=T}
+
+
+#load the reticulate package  
+library(reticulate)
+
+# activate my previously created conda environment
+use_condaenv(condaenv = "barra_python", conda = "auto", required = FALSE)
+
+```
+
+Make sure my 3.9 conda env is loaded
+```{python}
+
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+```
+
+
+
+### Spetember 12, 2021
+
+A simple function for conducted mathematical operations on cubes, mats, vecs and scalers.This function takes a user specified number of keyword arguments (i.e a = array1, b = scaler1 ... etc.). eq is a char string equation utilizing the variables named previously. (i.e. eq = "a ** b").
+
+```{python}
+
+x = 5 + 3
+print(x)
+
+```
+
+
