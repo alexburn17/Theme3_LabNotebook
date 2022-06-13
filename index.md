@@ -18,7 +18,8 @@ Some of us may not use python on a regular basis, so I have set up some basic in
 
 
 * 3) We are going to use this python library in the R Studio environment. This IDE should allow for people with limited Python expierence who primarily work in R to smoothly transition. This page from the R Studio website gives instruction on how to set up Python 3 in R studio using the reticulate package. It requires running a few commands in your terminal. On some machines/installations the command `pip3` is used for working with Python 3 and pip is used for Python 2. The instructions below use `pip` but if you find that you are having issues and the python version you are woking with is coming up as version 2.x, try substituting the `pip3` command instead. [Working with Python 3 in R Studio](https://support.rstudio.com/hc/en-us/articles/360023654474-Installing-and-Configuring-Python-with-RStudio). 
-*
+
+
 * 4) Step 4 in the above link asks you to install python libraries that you wish to use using the `pip install`/`pip3 install` command. Here we will install python libraries required for the use of Spacetime. For the final deployment of Spacetime, dependancies that aren't already installed will autmotaically be installed but for now, we have to do this manually. The libraries you need are listed below (note, some of these libraries require eachother as dependancies. Run the intallations and if something is already installed, just check to make sure it is a recent version):
 	* xarray
 	* numpy
@@ -51,4 +52,4 @@ When using vignettes, simply copy Spacetime commands directly into your own driv
 
 ## Documentation: 
 * [API](documents/api.html)
-* [PyPI Page Draft](description.html)
+* [PyPI Page Draft](documents/description.html)
