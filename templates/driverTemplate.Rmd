@@ -1,0 +1,55 @@
+---
+title: "Spacetime Template"
+output: html_document
+---
+
+
+Date created:  June 10, 2022            
+Author: P. Alexander Burnham
+
+**Summary** This template will allow you to load your python environment and call in spacetime functions. Below the third code chunk, any python command or spacetime function may be used.
+
+### Load in virtual environment
+```{r setup, include=T}
+
+#load the reticulate package  
+library(reticulate)
+
+reticulate::py_config()
+
+# activate environment
+use_condaenv(condaenv = "barra_python", conda = "auto", required = FALSE)
+
+```
+
+### Make sure the proper version of Python is loaded through your virtual environment.
+```{python}
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+
+```
+
+### Load in spacetime functions for use
+```{python}
+from spacetime.input.readData import read_data
+from spacetime.scale.rasterAlign import raster_align
+from spacetime.scale.rasterTrim import raster_trim
+from spacetime.objects.fileObject import file_object
+from spacetime.operations.cubeSmasher import cube_smasher
+from spacetime.operations.makeCube import make_cube
+from spacetime.operations.loadCube import load_cube
+from spacetime.graphics.dataPlot import plot_cube
+from spacetime.operations.time import cube_time, return_time, scale_time, select_time
+from spacetime.operations.cubeToDataframe import cube_to_dataframe
+import matplotlib.pyplot as plt
+
+```
+
+### Your spacetime and other python code here:
+```{python}
+
+```
+
+
