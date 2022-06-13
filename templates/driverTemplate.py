@@ -8,6 +8,6 @@ from spacetime.operations.loadCube import load_cube
 from spacetime.graphics.dataPlot import plot_cube
 from spacetime.operations.time import cube_time, return_time, scale_time, select_time
 from spacetime.operations.cubeToDataframe import cube_to_dataframe
-import matplotlib.pyplot as plt
+
 
 # spacetime/python code here
