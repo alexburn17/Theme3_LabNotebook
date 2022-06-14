@@ -38,14 +38,15 @@ Some of us may not use python on a regular basis, so I have set up some basic in
 Everything should be working at this point, now you can look at the vignettes below for inspiration on how to use spacetime with your own data. This is a very early in-house version, so problems with the code are expected. When you find issues or have suggestions etc. give me a shout and I will note it and start working on a fix. If you have probems installing python and getting everything up and running, send me an email.
 
 ## Spacetime Vignettes:
-When using vignettes, simply copy Spacetime commands directly into your own driver. 
+When using vignettes, simply copy spacetime commands directly into your own driver. 
 
 * [Loading Files and Making Cubes](spaceTime_vignettes/readingFiles.html)
 * [Spatial Scaling](spaceTime_vignettes/scaling.html)
-* [Temporal Scaling]()
+* [Temporal Scaling](spaceTime_vignettes/scalingTime.html)
+* [Writing and Reading Cubes]()
 * [Cube Operations]()
 * [Plotting Cubes]()
-* [Writiing and Reading Cubes]()
+
 
 
 ## Documentation: 
