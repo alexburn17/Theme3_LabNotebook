@@ -40,7 +40,7 @@ Everything should be working at this point, now you can look at the vignettes be
 ## Spacetime Vignettes:
 When using vignettes, simply copy Spacetime commands directly into your own driver. 
 
-* [Loading Files](spaceTime_vignettes/Theme3_labNotebook.html)
+* [Loading Files and Making Cubes](spaceTime_vignettes/readingFiles.html)
 * [Spatial Scaling]()
 * [Temporal Scaling]()
 * [Cube Operations]()
