@@ -41,7 +41,7 @@ Everything should be working at this point, now you can look at the vignettes be
 When using vignettes, simply copy Spacetime commands directly into your own driver. 
 
 * [Loading Files and Making Cubes](spaceTime_vignettes/readingFiles.html)
-* [Spatial Scaling]()
+* [Spatial Scaling](spaceTime_vignettes/scaling.html)
 * [Temporal Scaling]()
 * [Cube Operations]()
 * [Plotting Cubes]()
