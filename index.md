@@ -45,6 +45,8 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 * [Temporal Scaling](spaceTime_vignettes/scalingTime.html)
 * [Writing and Reading Cubes](spaceTime_vignettes/readAndWrite.html)
 * [Cube Operations](spaceTime_vignettes/cubeOps.html)
+* [Plotting Cubes](spaceTime_vignettes/plotting.html)
+	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 	
 
 
 
