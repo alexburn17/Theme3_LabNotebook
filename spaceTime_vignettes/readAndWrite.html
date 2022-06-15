@@ -187,20 +187,1015 @@ scaledData = raster_align(ds)
 trimmedData = raster_trim(scaledData)</code></pre>
 <p>Finally, we will make a cube Object. Each file will be assigned to a variable (10km and 1km).</p>
 <pre class="python"><code># set up time vec for 101 years
-yearObj = cube_time(start=&quot;2000&quot;, length=101, scale = &quot;year&quot;)
+yearObj = cube_time(start=&quot;2000-12-31&quot;, length=101, scale = &quot;month&quot;)
 
 # make cube
-cube = make_cube(data = trimmedData, fileName = &quot;yearCube.nc4&quot;, organizeFiles = &quot;filestovar&quot;, organizeBands=&quot;bandstotime&quot;, timeObj = yearObj, varNames = [&quot;10km&quot;, &quot;1km&quot;])</code></pre>
+cube = make_cube(data = trimmedData, fileName = &quot;monthCube.nc4&quot;, organizeFiles = &quot;filestovar&quot;, organizeBands=&quot;bandstotime&quot;, timeObj = yearObj, varNames = [&quot;10km&quot;, &quot;1km&quot;])</code></pre>
 </div>
-<div id="multiply-values-by-5-and-write-cube" class="section level3">
-<h3>multiply values by 5 and write cube</h3>
-<p>Let’s create new cube where every value is multiplied by 5 and write the file to disk. <code>cube_smasher()</code> takes user specified variables, equations and functions and returns a modified cube.</p>
+<div id="subset-the-cube" class="section level3">
+<h3>Subset the Cube</h3>
+<p>Let’s create new cube that only contains time slices between 2000-12-31 and 205-12-31.</p>
 <pre class="python"><code># use cube smahser to multiply cube by 5
-multBy5 = cube_smasher(eq = &quot;a * c&quot;, a = cube, c = 5, parentCube = cube)</code></pre>
+selectedTime = select_time(cube=cube, range=[&quot;2000-12-31&quot;, &quot;2005-12-31&quot;])</code></pre>
 <p>Let’s write this cube back out. We use the same function <code>make_cube()</code> to write out a new cube as you would to compile a cube from a file object. The function recognizes which case is being used automatically.</p>
 <pre class="python"><code># write out the cube
-test = make_cube(data = multBy5, fileName = &quot;multby5.nc4&quot;)
-</code></pre>
+subCube = make_cube(data = selectedTime, fileName = &quot;subCube.nc4&quot;)
+
+# lets look at the dataset
+subCube.get_raster_data()</code></pre>
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.DataArray (variables: 2, lat: 149, lon: 297, time: 61)&gt;
+array([[[[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+...
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 8.1205005e+02,  8.1205005e+02,  1.2280000e+03, ...,
+           1.6400000e+03,  1.6000000e+03,  1.5820000e+03],
+         [ 2.0893887e+02,  2.0893887e+02,  3.6000000e+02, ...,
+           1.4490000e+03,  1.4210000e+03,  1.4390000e+03],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]]]],
+      dtype=float32)
+Coordinates:
+  * variables  (variables) &lt;U4 &#39;10km&#39; &#39;1km&#39;
+  * lon        (lon) float32 -83.75 -83.67 -83.58 -83.5 ... -59.25 -59.17 -59.08
+  * lat        (lat) float32 49.0 48.92 48.83 48.75 ... 36.92 36.83 36.75 36.67
+  * time       (time) datetime64[ns] 2000-12-31 2001-01-31 ... 2005-12-31</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">variables</span>: 2</li><li><span class="xr-has-index">lat</span>: 149</li><li><span class="xr-has-index">lon</span>: 297</li><li><span class="xr-has-index">time</span>: 61</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-8908c5f6-94fe-4ac7-9203-d45d85da22a7" class="xr-array-in" type="checkbox" checked><label for="section-8908c5f6-94fe-4ac7-9203-d45d85da22a7" title="Show/hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>-3.4e+38 -3.4e+38 -3.4e+38 -3.4e+38 ... -3.4e+38 -3.4e+38 -3.4e+38</span></div><div class="xr-array-data"><pre>array([[[[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+...
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 8.1205005e+02,  8.1205005e+02,  1.2280000e+03, ...,
+           1.6400000e+03,  1.6000000e+03,  1.5820000e+03],
+         [ 2.0893887e+02,  2.0893887e+02,  3.6000000e+02, ...,
+           1.4490000e+03,  1.4210000e+03,  1.4390000e+03],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]]]],
+      dtype=float32)</pre></div></div></li><li class="xr-section-item"><input id="section-bfc40931-d20e-4bfa-88b9-8920af8e29e9" class="xr-section-summary-in" type="checkbox" checked><label for="section-bfc40931-d20e-4bfa-88b9-8920af8e29e9" class="xr-section-summary">Coordinates: <span>(4)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">variables</span></div><div class="xr-var-dims">(variables)</div><div class="xr-var-dtype">&lt;U4</div><div class="xr-var-preview xr-preview">&#39;10km&#39; &#39;1km&#39;</div><input id="attrs-14fb69cd-b3ea-4fbb-9144-cc316b05a8a0" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-14fb69cd-b3ea-4fbb-9144-cc316b05a8a0" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-42af6abc-6c37-4d96-a2ef-71fbbb963d3a" class="xr-var-data-in" type="checkbox"><label for="data-42af6abc-6c37-4d96-a2ef-71fbbb963d3a" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([&#39;10km&#39;, &#39;1km&#39;], dtype=&#39;&lt;U4&#39;)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lon</span></div><div class="xr-var-dims">(lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">-83.75 -83.67 ... -59.17 -59.08</div><input id="attrs-387c7481-5b1b-47dc-afc0-e2beb6e6f502" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-387c7481-5b1b-47dc-afc0-e2beb6e6f502" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-0bb9efd0-6265-43bf-9be6-4d43edddc044" class="xr-var-data-in" type="checkbox"><label for="data-0bb9efd0-6265-43bf-9be6-4d43edddc044" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([-83.75    , -83.666664, -83.583336, ..., -59.25    , -59.166668,
+       -59.083332], dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lat</span></div><div class="xr-var-dims">(lat)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">49.0 48.92 48.83 ... 36.75 36.67</div><input id="attrs-74d9c172-960e-4154-a949-4e09d8792941" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-74d9c172-960e-4154-a949-4e09d8792941" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-9e2f381f-a248-49a8-93db-05e15c33c122" class="xr-var-data-in" type="checkbox"><label for="data-9e2f381f-a248-49a8-93db-05e15c33c122" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([49.      , 48.916668, 48.833332, 48.75    , 48.666668, 48.583332,
+       48.5     , 48.416668, 48.333332, 48.25    , 48.166668, 48.083332,
+       48.      , 47.916668, 47.833332, 47.75    , 47.666668, 47.583332,
+       47.5     , 47.416668, 47.333332, 47.25    , 47.166668, 47.083332,
+       47.      , 46.916668, 46.833332, 46.75    , 46.666668, 46.583332,
+       46.5     , 46.416668, 46.333332, 46.25    , 46.166668, 46.083332,
+       46.      , 45.916668, 45.833332, 45.75    , 45.666668, 45.583332,
+       45.5     , 45.416668, 45.333332, 45.25    , 45.166668, 45.083332,
+       45.      , 44.916668, 44.833332, 44.75    , 44.666668, 44.583332,
+       44.5     , 44.416668, 44.333332, 44.25    , 44.166668, 44.083332,
+       44.      , 43.916668, 43.833332, 43.75    , 43.666668, 43.583332,
+       43.5     , 43.416668, 43.333332, 43.25    , 43.166668, 43.083332,
+       43.      , 42.916668, 42.833332, 42.75    , 42.666668, 42.583332,
+       42.5     , 42.416668, 42.333332, 42.25    , 42.166668, 42.083332,
+       42.      , 41.916668, 41.833332, 41.75    , 41.666668, 41.583332,
+       41.5     , 41.416668, 41.333332, 41.25    , 41.166668, 41.083332,
+       41.      , 40.916668, 40.833332, 40.75    , 40.666668, 40.583332,
+       40.5     , 40.416668, 40.333332, 40.25    , 40.166668, 40.083332,
+       40.      , 39.916668, 39.833332, 39.75    , 39.666668, 39.583332,
+       39.5     , 39.416668, 39.333332, 39.25    , 39.166668, 39.083332,
+       39.      , 38.916668, 38.833332, 38.75    , 38.666668, 38.583332,
+       38.5     , 38.416668, 38.333332, 38.25    , 38.166668, 38.083332,
+       38.      , 37.916668, 37.833332, 37.75    , 37.666668, 37.583332,
+       37.5     , 37.416668, 37.333332, 37.25    , 37.166668, 37.083332,
+       37.      , 36.916668, 36.833332, 36.75    , 36.666668], dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">time</span></div><div class="xr-var-dims">(time)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">2000-12-31 ... 2005-12-31</div><input id="attrs-07569c36-bbbc-4629-9fd5-e04aad1c4608" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-07569c36-bbbc-4629-9fd5-e04aad1c4608" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-8d9b66a7-6405-45b8-8f19-139508ba9b8f" class="xr-var-data-in" type="checkbox"><label for="data-8d9b66a7-6405-45b8-8f19-139508ba9b8f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([&#39;2000-12-31T00:00:00.000000000&#39;, &#39;2001-01-31T00:00:00.000000000&#39;,
+       &#39;2001-02-28T00:00:00.000000000&#39;, &#39;2001-03-31T00:00:00.000000000&#39;,
+       &#39;2001-04-30T00:00:00.000000000&#39;, &#39;2001-05-31T00:00:00.000000000&#39;,
+       &#39;2001-06-30T00:00:00.000000000&#39;, &#39;2001-07-31T00:00:00.000000000&#39;,
+       &#39;2001-08-31T00:00:00.000000000&#39;, &#39;2001-09-30T00:00:00.000000000&#39;,
+       &#39;2001-10-31T00:00:00.000000000&#39;, &#39;2001-11-30T00:00:00.000000000&#39;,
+       &#39;2001-12-31T00:00:00.000000000&#39;, &#39;2002-01-31T00:00:00.000000000&#39;,
+       &#39;2002-02-28T00:00:00.000000000&#39;, &#39;2002-03-31T00:00:00.000000000&#39;,
+       &#39;2002-04-30T00:00:00.000000000&#39;, &#39;2002-05-31T00:00:00.000000000&#39;,
+       &#39;2002-06-30T00:00:00.000000000&#39;, &#39;2002-07-31T00:00:00.000000000&#39;,
+       &#39;2002-08-31T00:00:00.000000000&#39;, &#39;2002-09-30T00:00:00.000000000&#39;,
+       &#39;2002-10-31T00:00:00.000000000&#39;, &#39;2002-11-30T00:00:00.000000000&#39;,
+       &#39;2002-12-31T00:00:00.000000000&#39;, &#39;2003-01-31T00:00:00.000000000&#39;,
+       &#39;2003-02-28T00:00:00.000000000&#39;, &#39;2003-03-31T00:00:00.000000000&#39;,
+       &#39;2003-04-30T00:00:00.000000000&#39;, &#39;2003-05-31T00:00:00.000000000&#39;,
+       &#39;2003-06-30T00:00:00.000000000&#39;, &#39;2003-07-31T00:00:00.000000000&#39;,
+       &#39;2003-08-31T00:00:00.000000000&#39;, &#39;2003-09-30T00:00:00.000000000&#39;,
+       &#39;2003-10-31T00:00:00.000000000&#39;, &#39;2003-11-30T00:00:00.000000000&#39;,
+       &#39;2003-12-31T00:00:00.000000000&#39;, &#39;2004-01-31T00:00:00.000000000&#39;,
+       &#39;2004-02-29T00:00:00.000000000&#39;, &#39;2004-03-31T00:00:00.000000000&#39;,
+       &#39;2004-04-30T00:00:00.000000000&#39;, &#39;2004-05-31T00:00:00.000000000&#39;,
+       &#39;2004-06-30T00:00:00.000000000&#39;, &#39;2004-07-31T00:00:00.000000000&#39;,
+       &#39;2004-08-31T00:00:00.000000000&#39;, &#39;2004-09-30T00:00:00.000000000&#39;,
+       &#39;2004-10-31T00:00:00.000000000&#39;, &#39;2004-11-30T00:00:00.000000000&#39;,
+       &#39;2004-12-31T00:00:00.000000000&#39;, &#39;2005-01-31T00:00:00.000000000&#39;,
+       &#39;2005-02-28T00:00:00.000000000&#39;, &#39;2005-03-31T00:00:00.000000000&#39;,
+       &#39;2005-04-30T00:00:00.000000000&#39;, &#39;2005-05-31T00:00:00.000000000&#39;,
+       &#39;2005-06-30T00:00:00.000000000&#39;, &#39;2005-07-31T00:00:00.000000000&#39;,
+       &#39;2005-08-31T00:00:00.000000000&#39;, &#39;2005-09-30T00:00:00.000000000&#39;,
+       &#39;2005-10-31T00:00:00.000000000&#39;, &#39;2005-11-30T00:00:00.000000000&#39;,
+       &#39;2005-12-31T00:00:00.000000000&#39;], dtype=&#39;datetime64[ns]&#39;)</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-d4b95c5b-adb4-4dce-a4df-cb79174335ec" class="xr-section-summary-in" type="checkbox" disabled><label for="section-d4b95c5b-adb4-4dce-a4df-cb79174335ec" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
+<p>We can see that we now have 61 time points and our cube file named “subCube.nc4” is written to disk. We could now close our session with our progress saved. Lets reopen the cube using the <code>load_cube()</code> function.</p>
+<pre class="python"><code># reload the cube
+reloaded_subCube = load_cube(file=&quot;subCube.nc4&quot;)
+
+# check to make sure the data look the same
+reloaded_subCube.get_raster_data()</code></pre>
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2 {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class="xr-text-repr-fallback">&lt;xarray.DataArray (variables: 2, lat: 149, lon: 297, time: 61)&gt;
+array([[[[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+...
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 8.1205005e+02,  8.1205005e+02,  1.2280000e+03, ...,
+           1.6400000e+03,  1.6000000e+03,  1.5820000e+03],
+         [ 2.0893887e+02,  2.0893887e+02,  3.6000000e+02, ...,
+           1.4490000e+03,  1.4210000e+03,  1.4390000e+03],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]]]],
+      dtype=float32)
+Coordinates:
+  * variables  (variables) &lt;U4 &#39;10km&#39; &#39;1km&#39;
+  * lon        (lon) float32 -83.75 -83.67 -83.58 -83.5 ... -59.25 -59.17 -59.08
+  * lat        (lat) float32 49.0 48.92 48.83 48.75 ... 36.92 36.83 36.75 36.67
+  * time       (time) datetime64[ns] 2000-12-31 2001-01-31 ... 2005-12-31</pre><div class="xr-wrap" style="display:none"><div class="xr-header"><div class="xr-obj-type">xarray.DataArray</div><div class="xr-array-name"></div><ul class="xr-dim-list"><li><span class="xr-has-index">variables</span>: 2</li><li><span class="xr-has-index">lat</span>: 149</li><li><span class="xr-has-index">lon</span>: 297</li><li><span class="xr-has-index">time</span>: 61</li></ul></div><ul class="xr-sections"><li class="xr-section-item"><div class="xr-array-wrap"><input id="section-9f9ecc2a-9f98-4e2b-916f-4027d32c77bc" class="xr-array-in" type="checkbox" checked><label for="section-9f9ecc2a-9f98-4e2b-916f-4027d32c77bc" title="Show/hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-array-preview xr-preview"><span>-3.4e+38 -3.4e+38 -3.4e+38 -3.4e+38 ... -3.4e+38 -3.4e+38 -3.4e+38</span></div><div class="xr-array-data"><pre>array([[[[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+         [ 0.0000000e+00,  0.0000000e+00,  0.0000000e+00, ...,
+           0.0000000e+00,  0.0000000e+00,  0.0000000e+00],
+...
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]],
+
+        [[-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [ 8.1205005e+02,  8.1205005e+02,  1.2280000e+03, ...,
+           1.6400000e+03,  1.6000000e+03,  1.5820000e+03],
+         [ 2.0893887e+02,  2.0893887e+02,  3.6000000e+02, ...,
+           1.4490000e+03,  1.4210000e+03,  1.4390000e+03],
+         ...,
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38],
+         [-3.4000000e+38, -3.4000000e+38, -3.4000000e+38, ...,
+          -3.4000000e+38, -3.4000000e+38, -3.4000000e+38]]]],
+      dtype=float32)</pre></div></div></li><li class="xr-section-item"><input id="section-6ee7c46d-e2eb-47fe-b47d-f7e7fdafc554" class="xr-section-summary-in" type="checkbox" checked><label for="section-6ee7c46d-e2eb-47fe-b47d-f7e7fdafc554" class="xr-section-summary">Coordinates: <span>(4)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><ul class="xr-var-list"><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">variables</span></div><div class="xr-var-dims">(variables)</div><div class="xr-var-dtype">&lt;U4</div><div class="xr-var-preview xr-preview">&#39;10km&#39; &#39;1km&#39;</div><input id="attrs-c25e9e35-dc1d-4f75-8e87-bba195a8ca61" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-c25e9e35-dc1d-4f75-8e87-bba195a8ca61" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-82f51a52-232e-45cc-b41e-d1aae1a8cc7f" class="xr-var-data-in" type="checkbox"><label for="data-82f51a52-232e-45cc-b41e-d1aae1a8cc7f" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([&#39;10km&#39;, &#39;1km&#39;], dtype=&#39;&lt;U4&#39;)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lon</span></div><div class="xr-var-dims">(lon)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">-83.75 -83.67 ... -59.17 -59.08</div><input id="attrs-232c1113-c491-4e67-b121-9ae4fae883c6" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-232c1113-c491-4e67-b121-9ae4fae883c6" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-051ea394-c591-4f27-984c-3f68fd08d2a6" class="xr-var-data-in" type="checkbox"><label for="data-051ea394-c591-4f27-984c-3f68fd08d2a6" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([-83.75    , -83.666664, -83.583336, ..., -59.25    , -59.166668,
+       -59.083332], dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">lat</span></div><div class="xr-var-dims">(lat)</div><div class="xr-var-dtype">float32</div><div class="xr-var-preview xr-preview">49.0 48.92 48.83 ... 36.75 36.67</div><input id="attrs-e7dd117f-d552-46d4-9f68-4577625b509d" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-e7dd117f-d552-46d4-9f68-4577625b509d" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-b02eb89a-8cac-4a34-9a10-11cdfbe1ef61" class="xr-var-data-in" type="checkbox"><label for="data-b02eb89a-8cac-4a34-9a10-11cdfbe1ef61" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([49.      , 48.916668, 48.833332, 48.75    , 48.666668, 48.583332,
+       48.5     , 48.416668, 48.333332, 48.25    , 48.166668, 48.083332,
+       48.      , 47.916668, 47.833332, 47.75    , 47.666668, 47.583332,
+       47.5     , 47.416668, 47.333332, 47.25    , 47.166668, 47.083332,
+       47.      , 46.916668, 46.833332, 46.75    , 46.666668, 46.583332,
+       46.5     , 46.416668, 46.333332, 46.25    , 46.166668, 46.083332,
+       46.      , 45.916668, 45.833332, 45.75    , 45.666668, 45.583332,
+       45.5     , 45.416668, 45.333332, 45.25    , 45.166668, 45.083332,
+       45.      , 44.916668, 44.833332, 44.75    , 44.666668, 44.583332,
+       44.5     , 44.416668, 44.333332, 44.25    , 44.166668, 44.083332,
+       44.      , 43.916668, 43.833332, 43.75    , 43.666668, 43.583332,
+       43.5     , 43.416668, 43.333332, 43.25    , 43.166668, 43.083332,
+       43.      , 42.916668, 42.833332, 42.75    , 42.666668, 42.583332,
+       42.5     , 42.416668, 42.333332, 42.25    , 42.166668, 42.083332,
+       42.      , 41.916668, 41.833332, 41.75    , 41.666668, 41.583332,
+       41.5     , 41.416668, 41.333332, 41.25    , 41.166668, 41.083332,
+       41.      , 40.916668, 40.833332, 40.75    , 40.666668, 40.583332,
+       40.5     , 40.416668, 40.333332, 40.25    , 40.166668, 40.083332,
+       40.      , 39.916668, 39.833332, 39.75    , 39.666668, 39.583332,
+       39.5     , 39.416668, 39.333332, 39.25    , 39.166668, 39.083332,
+       39.      , 38.916668, 38.833332, 38.75    , 38.666668, 38.583332,
+       38.5     , 38.416668, 38.333332, 38.25    , 38.166668, 38.083332,
+       38.      , 37.916668, 37.833332, 37.75    , 37.666668, 37.583332,
+       37.5     , 37.416668, 37.333332, 37.25    , 37.166668, 37.083332,
+       37.      , 36.916668, 36.833332, 36.75    , 36.666668], dtype=float32)</pre></div></li><li class="xr-var-item"><div class="xr-var-name"><span class="xr-has-index">time</span></div><div class="xr-var-dims">(time)</div><div class="xr-var-dtype">datetime64[ns]</div><div class="xr-var-preview xr-preview">2000-12-31 ... 2005-12-31</div><input id="attrs-6dc9175f-5238-4438-b481-ce1a96d36268" class="xr-var-attrs-in" type="checkbox" disabled><label for="attrs-6dc9175f-5238-4438-b481-ce1a96d36268" title="Show/Hide attributes"><svg class="icon xr-icon-file-text2"><use xlink:href="#icon-file-text2"></use></svg></label><input id="data-0d615e09-f46a-4a97-89a7-9391adff9945" class="xr-var-data-in" type="checkbox"><label for="data-0d615e09-f46a-4a97-89a7-9391adff9945" title="Show/Hide data repr"><svg class="icon xr-icon-database"><use xlink:href="#icon-database"></use></svg></label><div class="xr-var-attrs"><dl class="xr-attrs"></dl></div><div class="xr-var-data"><pre>array([&#39;2000-12-31T00:00:00.000000000&#39;, &#39;2001-01-31T00:00:00.000000000&#39;,
+       &#39;2001-02-28T00:00:00.000000000&#39;, &#39;2001-03-31T00:00:00.000000000&#39;,
+       &#39;2001-04-30T00:00:00.000000000&#39;, &#39;2001-05-31T00:00:00.000000000&#39;,
+       &#39;2001-06-30T00:00:00.000000000&#39;, &#39;2001-07-31T00:00:00.000000000&#39;,
+       &#39;2001-08-31T00:00:00.000000000&#39;, &#39;2001-09-30T00:00:00.000000000&#39;,
+       &#39;2001-10-31T00:00:00.000000000&#39;, &#39;2001-11-30T00:00:00.000000000&#39;,
+       &#39;2001-12-31T00:00:00.000000000&#39;, &#39;2002-01-31T00:00:00.000000000&#39;,
+       &#39;2002-02-28T00:00:00.000000000&#39;, &#39;2002-03-31T00:00:00.000000000&#39;,
+       &#39;2002-04-30T00:00:00.000000000&#39;, &#39;2002-05-31T00:00:00.000000000&#39;,
+       &#39;2002-06-30T00:00:00.000000000&#39;, &#39;2002-07-31T00:00:00.000000000&#39;,
+       &#39;2002-08-31T00:00:00.000000000&#39;, &#39;2002-09-30T00:00:00.000000000&#39;,
+       &#39;2002-10-31T00:00:00.000000000&#39;, &#39;2002-11-30T00:00:00.000000000&#39;,
+       &#39;2002-12-31T00:00:00.000000000&#39;, &#39;2003-01-31T00:00:00.000000000&#39;,
+       &#39;2003-02-28T00:00:00.000000000&#39;, &#39;2003-03-31T00:00:00.000000000&#39;,
+       &#39;2003-04-30T00:00:00.000000000&#39;, &#39;2003-05-31T00:00:00.000000000&#39;,
+       &#39;2003-06-30T00:00:00.000000000&#39;, &#39;2003-07-31T00:00:00.000000000&#39;,
+       &#39;2003-08-31T00:00:00.000000000&#39;, &#39;2003-09-30T00:00:00.000000000&#39;,
+       &#39;2003-10-31T00:00:00.000000000&#39;, &#39;2003-11-30T00:00:00.000000000&#39;,
+       &#39;2003-12-31T00:00:00.000000000&#39;, &#39;2004-01-31T00:00:00.000000000&#39;,
+       &#39;2004-02-29T00:00:00.000000000&#39;, &#39;2004-03-31T00:00:00.000000000&#39;,
+       &#39;2004-04-30T00:00:00.000000000&#39;, &#39;2004-05-31T00:00:00.000000000&#39;,
+       &#39;2004-06-30T00:00:00.000000000&#39;, &#39;2004-07-31T00:00:00.000000000&#39;,
+       &#39;2004-08-31T00:00:00.000000000&#39;, &#39;2004-09-30T00:00:00.000000000&#39;,
+       &#39;2004-10-31T00:00:00.000000000&#39;, &#39;2004-11-30T00:00:00.000000000&#39;,
+       &#39;2004-12-31T00:00:00.000000000&#39;, &#39;2005-01-31T00:00:00.000000000&#39;,
+       &#39;2005-02-28T00:00:00.000000000&#39;, &#39;2005-03-31T00:00:00.000000000&#39;,
+       &#39;2005-04-30T00:00:00.000000000&#39;, &#39;2005-05-31T00:00:00.000000000&#39;,
+       &#39;2005-06-30T00:00:00.000000000&#39;, &#39;2005-07-31T00:00:00.000000000&#39;,
+       &#39;2005-08-31T00:00:00.000000000&#39;, &#39;2005-09-30T00:00:00.000000000&#39;,
+       &#39;2005-10-31T00:00:00.000000000&#39;, &#39;2005-11-30T00:00:00.000000000&#39;,
+       &#39;2005-12-31T00:00:00.000000000&#39;], dtype=&#39;datetime64[ns]&#39;)</pre></div></li></ul></div></li><li class="xr-section-item"><input id="section-d7a473f4-54de-4cb8-8cc9-f642f76733dc" class="xr-section-summary-in" type="checkbox" disabled><label for="section-d7a473f4-54de-4cb8-8cc9-f642f76733dc" class="xr-section-summary" title="Expand/collapse section">Attributes: <span>(0)</span></label><div class="xr-section-inline-details"></div><div class="xr-section-details"><dl class="xr-attrs"></dl></div></li></ul></div></div>
+<p>The reloaded data looks just like the original dataset. This file could be passed to another user and they would be able to access the new cube using spacetime on their own machine.</p>
 </div>
 
 
