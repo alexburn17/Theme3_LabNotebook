@@ -48,6 +48,12 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 * [Plotting Cubes](spaceTime_vignettes/plotting.html)
 	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 	
 
+## All Team Meeting (August 2022):
+Files and a videos for the material presented by Theme 3 for the August 2022 all teams meeting.
+
+* [All Teams Meeting Demonstration](spaceTime_vignettes/AllTeams_Demo.html)
+* [All Teams Meeting Script](templates/AllTeams_Demo.Rmd)
+* [Demonstration Tutorial Video](templates/AllTeams_Demo.Rmd)
 
 
 ## Documentation: 
