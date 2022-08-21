@@ -51,10 +51,21 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 ## All Team Meeting (August 2022):
 Files and a videos for the material presented by Theme 3 for the August 2022 all teams meeting.
 
+**Presentation:**
+
+
+* [Theme Three Presentation Video](https://www.youtube.com/watch?v=RIKNoj4rkmE)
+* [Theme 3 Slides](documents/All_Team_Theme3.pptx)
+
+**Demonstration:**
+
+
+* [Theme Three Spacetime Demo Video](https://www.youtube.com/watch?v=6yP55cXeoN4)
 * [All Teams Meeting Demonstration](spaceTime_vignettes/AllTeams_Demo.html)
 * [All Teams Meeting Script](templates/AllTeams_Demo.Rmd)
-* [Demonstration Tutorial Video](templates/AllTeams_Demo.Rmd)
-* [Theme 3 Slides](documents/All_Team_Theme3.pptx)
+
+
+
 
 
 ## Documentation: 
