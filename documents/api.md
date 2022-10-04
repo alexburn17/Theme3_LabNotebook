@@ -1,5 +1,6 @@
 
-![spacetime logo](barraLogo.jpg)
+![spacetime logo](/Users/pburnham/Desktop/barracudaDocumentation/barraLogo.jpg)
+
 
 -----------------
 
@@ -11,62 +12,62 @@ The main objective of the spacetime python is to make tasks like loading, rescal
 ## Spacetime Objects:
 
 
-### `fileObj.methods():`
+###`fileObj.methods():`
 **Description:**  File objects are the output of the `read_data()` fucntion. They are essentially a list object of all the raster files that were read in. All methods of a file object result in a list of outputs (one for each raster in the object). File objects can contain rasters of various scales, time lengths, and sizes. The functions `raster_scale()` and `raster_align()` may be used on file objects to return a file object that contains aligned and trimmed rasters.		
 **General output of methods:** A list of output objects of the length of the list of raster objects loaded by `read_data()`.		
 
-* `extract_original_data()` - Extracts GDAL data object			
-* `extract_epsg_code()` - extracts spatial reference system EPSG code				
-* `extract_units()`	- extracts units of spatial grid	
-* `upper_left_corner()`	- Extracts lat and long coords of the upper left corner	
-* `number_of_bands()` - Extracts the number of bands		
+* `get_GDAL_data()` - Extracts GDAL data object			
+* `get_epsg_code()` - extracts spatial reference system EPSG code				
+* `get_units()`	- extracts units of spatial grid	
+* `get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
+* `get_band_number()` - Extracts the number of bands		
 * `change_time(start, stop, interval)` - Changes the time values associated with bands
 	* start = (int or list)	of starting time/date/year 
 	* start = (int or list)	of ending time/date/year
 	* interval = (numeric) interval between times
-* `extract_time()` - extracts time values (default = 0-N)		
-* `get_raster_dimensions()` - Extracts raster x and y dimensions				
+* `get_time()` - extracts time values (default = 0-N)		
+* `get_dims()` - Extracts raster x and y dimensions				
 * `get_nodata_value()` - returns no data values		
-* `get_raster_data()` - get full raster data set as numpy array		
+* `get_data_array()` - get full raster data set as numpy array		
 * `get_bands(min=1, max=2, rasters = [0])` get subset of raster data as numpy array
 	* min = (int >= 1) first raster band to extract
 	* max = (int <= number of bands) last raster band to extract
 	* rasters = (list) list of rasters (0-number of rasters) to pull from	 
-* `get_latitude()` - get latitude values		
-* `get_longitude()` - get longitude values		
+* `get_lat()` - get latitude values		
+* `get_lon()` - get longitude values		
 
 ```python
 # extract list of raster data cubes from file object
-dataArray = ds.get_raster_data()
+dataArray = ds.get_data_array()
 
 ```
 
 
 
 
-### `cubeObj.methods():`
+###`cubeObj.methods():`
 **Description:**  Cube objects are the main operational unit in the spacetime package. Cube objects are cleaned, aligned D-dimensioal cube-liek datasets that minamally contain a data cube, a time dimension, and latitude and longitude (y, x) dimensions. They are the output of the `make_cube()` function. Cube objects may be passed to functions like `cube_smasher()`, `cube_plotter()` etc. to be opperated on mathmatically or functionally and visulized.
 **General output of methods:** The associated value for the cube object as specified by the method.		
 
-* `extract_original_data()` - Extracts netCDF4 data object			
-* `extract_epsg_code()` - extracts spatial reference system EPSG code				
-* `extract_units()`	- extracts units of spatial grid	
-* `upper_left_corner()`	- Extracts lat and long coords of the upper left corner	
-* `number_of_bands()` - Extracts the number of bands		
-* `extract_time()` - extracts time values
+* `get_GDAL_data()` - Extracts orignal data object			
+* `get_epsg_code()` - extracts spatial reference system EPSG code				
+* `get_units()`	- extracts units of spatial grid	
+* `get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
+* `get_band_number()` - Extracts the number of bands		
+* `get_time()` - extracts time values
 			
-* `get_raster_dimensions()` - Extracts raster x and y dimensions				
+* `get_dims()` - Extracts raster x and y dimensions				
 * `get_nodata_value()` - returns no data values		
-* `get_raster_data(variables)` - return a full D-dimensional raster data set as an xarray dataArray. 
+* `get_data_array(variables)` - return a full D-dimensional raster data set as an xarray dataArray. 
 	* variables = selects variables to return if cube was created with the "filestovar" option. Takes a list of character string variable names. 				 
-* `get_latitude()` - get latitude values		
-* `get_longitude()` - get longitude values
+* `get_lat()` - get latitude values		
+* `get_lon()` - get longitude values
 
-*  `get_names()` - get the variable names of the cube		
+*  `get_var_names()` - get the variable names of the cube		
 
 ```python
 # extract latitude dimension from cube object
-lat = ds.get_latitude()
+lat = ds.get_lat()
 
 ```
 
@@ -102,7 +103,7 @@ ds = read_data(data=rasterList)
 		* "filestovar" creates a higher dimensional cube where each cube is a different variable and time are bands within each raster. 	* **organizeBands** = how bands are treated when assembling the cube (chr).
 		* "bandstotime" = bands are a time dimension
 		* "bandstovar" = bands are variables
-	* **varNames** = a list of character strings that are the variable names for each file if the "filestovar" option is selected. If not specified, varaibles will be named 0 through n (number of variables). 
+	* **varNames** = a list of character strings that are the variable names for each file if the "filestovar" option is selected 
 	* **timeObj** = A time object created by `cube_time()` of the desired time length. If not specified, time defaults to integers 0 to length of cube stack.
 * Example function call:
 
@@ -112,62 +113,29 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 
 
 
-### `raster_align(data=None, resolution=None, SRS=None, noneVal=None, algorithm="near")`
+### `raster_align(data=None, resolution=None, SRS=None, noneVal=None)`
 * **Functionality:** Sets input object to have same spatial reference system and resolution and alignment.
 * **Input:** data = file object as outputted by `read_data()` 
 * **Output:** aligned and rescaled cube or file objects
 * **Additional Arguments:** 
-	* **resolution** = (numeric or character) intended grid size of the outputted data set in either degrees or meters depending on the spatial reference system in use.
-		* **options:**
-			* "min" Down-scale all files to the resolution of the lowest resolution image
-			* "max" Up-scale all files to the resolution of the highest resolution image
-			* (numeric) a user specified resultion in the intended units of the output cube	  	
-		* **Default value:** "min"
+	* **resolution** = (numeric) intended grid size of the outputted data set in either degrees or meters depending on the spatial reference system in use.
+		* **Default value:** largest resolution in data set in input spacetime object
 	* **SRS** = (int) intended 4-digit spatial reference system code that all data sets in the outputted spacetime object will use.
 		* **Default value:** EPSG of first data set in input object
 	* **noneVal** = (numeric) no data value to be used by all datasets in the outputted spacetime object.
 		* **Default value:** no data value of first data set in input spacetime object
-	* **algorithm:** (char) The intended algorithm to be used to rescale rasters
-		* **options:**
-			* near: nearest neighbour resampling (default, fastest algorithm, worst interpolation quality).
-			* bilinear: bilinear resampling.
-			* cubic: cubic resampling.
-			* cubicspline: cubic spline resampling.
-			* lanczos: Lanczos windowed sinc resampling.
-			* average: average resampling, computes the weighted average of all non-NODATA contributing pixels.
-			* rms root mean square / quadratic mean of all non-NODATA contributing pixels 
-			* mode: mode resampling, selects the value which appears most often of all th
-			* sampled points. In the case of ties, the first value identified as the mode will be selected.
-			* max: maximum resampling, selects the maximum value from all non-NODATA contributing pixels.
-			* min: minimum resampling, selects the minimum value from all non-NODATA contributing pixels.
-			* med: median resampling, selects the median value of all non-NODATA contributing pixels.
-			* q1: first quartile resampling, selects the first quartile value of all non-NODATA contributing pixels.
-			* q3: third quartile resampling, selects the third quartile value of all non-NODATA contributing pixels.
-			* sum: compute the weighted sum of all non-NODATA contributing pixels 
-		* **Default value:** "near"
 * Example function call:
 
 ```python
-dsAligned = raster_align(data=fileObj, resolution=.08, SRS=4326, noneVal=-9999, algorithm="min")
+dsAligned = raster_align(data=fileObj, resolution=.08, SRS=4326, noneVal=-9999)
 ``` 
 
 
-### `raster_trim(data = None, method = "intersection", ul = None, lr = None, shapeFile = None)`
+### `raster_trim(data=None)`
 * **Functionality:** Trims datasets in the input object to have the same bounding box (i.e. spatial dimensionality).
 * **Input:** data = aligned file as outputted by `data_align()` 
-* **Output:** file or cube object trimmed using the specified method
-* **Additional Arguments:**
-	* **method:** Specifies the inteded trimming method.
-		* **Options:**
-			* "intersection" The smallest	bounding box that captures the area where all files overlap.
-			* *union" The bounding box that captures all data in all layers.
-			* "corners" Uses user provided upper left and lower right corners to create a bounding box.
-			* "shape" Uses a user provided shape file to trim rasters.  
-		* **Default value:** "intersection"
-		
-	* **ul:**	(list or tuple) Upper left corner as a latitude longitude pair  
-	* **lr:**	(list or tuple) Lower right corner as a latitude longitude pair
-	* **shapeFile:** (char) Name or path to shape file   
+* **Output:** file or cube object trimmed to greatest common bounding box
+* **Additional Arguments:** = None
 * Example function call:
 
 ```python
@@ -342,4 +310,4 @@ ds = load_cube(file = newCube)
  
 
 
-		
+		 
