@@ -5,7 +5,7 @@ Here I document the use and progress of the spacetime python library with a seri
 
 ## Using Spacetime in R Studio:
 
-* [Click to use Spacetime through R Studio](documents/pythonViaR.md)
+* [Click to use Spacetime through R Studio](pythonViaR.md)
 
 
 ## Spacetime Vignettes:
@@ -23,7 +23,6 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 Files and a videos for the material presented by Theme 3 for the August 2022 all teams meeting.
 
 **Presentation:**
-
 
 * [Theme Three Presentation Video](https://www.youtube.com/watch?v=RIKNoj4rkmE)
 * [Theme 3 Slides](documents/All_Team_Theme3.pptx)

@@ -30,7 +30,7 @@ Some of us may not use python on a regular basis, so I have set up some basic in
 
 * 5) Below are templates that you can use to start working with Spacetime. I am including a traditional python script, and an R markdown file for use in R Studio. If you have gone through the above installation, use the R markdown file as your driver. These files are also located in the github repository linked in step 2. [Here](https://youtu.be/BLufWXOe_kg) is a quick video I made that shows how to interact with spacetime after python is up and running.
 
-	* [R Markdown Driver](Theme3_LabNotebook/templates/driverTemplate.Rmd)
-	* [Python Script Driver](Theme3_LabNotebook/templates/driverTemplate.py)	 
+	* [R Markdown Driver](templates/driverTemplate.Rmd)
+	* [Python Script Driver](templates/driverTemplate.py)	 
 
 Everything should be working at this point, now you can look at the vignettes below for inspiration on how to use spacetime with your own data. This is a very early in-house version, so problems with the code are expected. When you find issues or have suggestions etc. give me a shout and I will note it and start working on a fix. If you have probems installing python and getting everything up and running, send me an email.
