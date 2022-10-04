@@ -48,11 +48,6 @@ import matplotlib.pyplot as plt
 ### Stacking two differently formatted files
 ```{python}
 
-# make script
-# make notebook
-# make demo video
-# load all to page
-
 # read files
 data = ["walkthrough_data/LULC_1995.tif", "walkthrough_data/India_cropped-area_1km_2016.tif"]
 
@@ -60,17 +55,17 @@ data = ["walkthrough_data/LULC_1995.tif", "walkthrough_data/India_cropped-area_1
 fo = read_data(data) 
 
 # let's query some attributes of this file object
-fo.number_of_bands() # check number of bands
-fo.extract_epsg_code() # check the epsg codes
-fo.get_raster_dimensions() # check the raster dimensions
-fo.pixel_size() # check pixel size
+fo.get_band_number() # check number of bands
+fo.get_epsg_code() # check the epsg codes
+fo.get_dims() # check the raster dimensions
+fo.get_pixel_size() # check pixel size
 fo.get_nodata_value() # check no data values
 ```
 
 **Let's plot the two files in the object and see what they look like**
 ```{python}
 # Get the array data
-arrays = fo.get_raster_data()
+arrays = fo.get_data_array()
 
 # plot file 1
 plt.imshow(arrays[0], vmin=0, vmax=17, cmap='gray')
@@ -88,16 +83,16 @@ plt.show()
 alignedFO = raster_align(data=fo, resolution=0.08, SRS=4326, noneVal=127)
 
 # let's query some attributes after aligning:
-alignedFO.extract_epsg_code() # check the epsg codes
-alignedFO.get_raster_dimensions() # check the raster dimensions
-alignedFO.pixel_size() # check pixel size
+alignedFO.get_epsg_code() # check the epsg codes
+alignedFO.get_dims() # check the raster dimensions
+alignedFO.get_pixel_size() # check pixel size
 alignedFO.get_nodata_value() # check no data values
 ```
 
 **Let's plot the two files in the object again**
 ```{python}
 # Get the array data
-arrays = alignedFO.get_raster_data()
+arrays = alignedFO.get_data_array()
 
 # plot file 1
 plt.imshow(arrays[0], vmin=0, vmax=17, cmap='gray')
@@ -114,10 +109,10 @@ plt.show()
 **The files are aligned but have different bounding boxes**
 ```{python}
 # here we use an intersection to trim the files. "union", pairs of corners and shape files are also options
-trimmedFO = raster_trim(alignedFO, method = "intersection")
+trimmedFO = raster_trim(data = alignedFO, method = "intersection")
 
 # check the raster dimensions to ensure we have a successful intersection
-trimmedFO.get_raster_dimensions() 
+trimmedFO.get_dims() 
 
 ```
 
@@ -130,7 +125,7 @@ yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
 cube = make_cube(data = trimmedFO, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
 
 ## let's look at the structure of the cube
-cube.get_raster_data()
+cube.get_data_array()
 ```
 
 
@@ -140,14 +135,13 @@ cube.get_raster_data()
 ```{python}
 
 # plot a summary using mean over time
-plot_cube(cube=cube, type="time_series", showPlot=True,summary="mean")
-
+plot_cube(cube=cube, plot_type="timeseries", summary="mean")
 ```
 
 **Plot spatial data**
 ```{python}
 
 # plot space
-plot_cube(cube=cube, type="space", showPlot=True)
+plot_cube(cube=cube, plot_type="space")
 
 ```
