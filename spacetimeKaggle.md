@@ -38,6 +38,6 @@ The instance of the VM can be turned on and off and restarted if issues arrise b
 
 ![VM](kaggle_shots/VM.png)
 
-A recorded a video that shows how to start working in Kaggle below:
+I recorded a video that shows how to start working in Kaggle below:
 
 
