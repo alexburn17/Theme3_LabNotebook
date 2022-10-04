@@ -1,4 +1,4 @@
-![spacetime logo](barraLogo.jpg)
+![spacetime logo](documents/barraLogo.jpg)
 
 ### Installing spacetime and Python for use in R Studio
 

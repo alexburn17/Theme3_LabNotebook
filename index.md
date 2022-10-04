@@ -3,7 +3,13 @@
 ## Description:
 Here I document the use and progress of the spacetime python library with a series of notebooks. These range from describing suported data type to trimming data layers, creating cubes and opperating on cleaned data.
 
+## Using Spacetime in Kaggle:
+Kaggle is an online virtual computing environment. I have installed python and spacetime's dependancies in a virtual environment. Data can be uploaded, operated on using spacetime functions in a notebook. The outputs can be downloaded of off the VM. This allows the user to explore spacetime on their own datasets without installing python on their local machine. This is the simplest way to use spacetime at the moment. Instructions are below.
+
+* [Click to use Spacetime through Kaggle](pythonViaR.md)
+
 ## Using Spacetime in R Studio:
+Spacetime is currently a python library but can be accessed in the R Studio environment using the reticulate package. This will allow the user to switch back and forth between Python and R in a R Markdown file. The following link gives installation instructions.
 
 * [Click to use Spacetime through R Studio](pythonViaR.md)
 
