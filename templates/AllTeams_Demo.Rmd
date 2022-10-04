@@ -1,0 +1,153 @@
+---
+title: "Demonstration of Spacetime"
+output: html_document
+---
+
+Date created:  August 1, 2022            
+Author: P. Alexander Burnham
+
+
+**Load Python Environment**
+```{r setup}
+
+#load the reticulate package  
+library(reticulate)
+
+# activate environment
+use_condaenv(condaenv = "myCondaEnvironment", conda = "auto", required = FALSE)
+
+```
+
+**Check Python Version**
+```{python}
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+```
+
+**Load Spacetime Files**
+```{python}
+from spacetime.input.readData import read_data
+from spacetime.scale.rasterAlign import raster_align
+from spacetime.scale.rasterTrim import raster_trim
+from spacetime.objects.fileObject import file_object
+from spacetime.operations.cubeSmasher import cube_smasher
+from spacetime.operations.makeCube import make_cube
+from spacetime.operations.loadCube import load_cube
+from spacetime.graphics.dataPlot import plot_cube
+from spacetime.operations.time import cube_time, return_time, scale_time, select_time
+from spacetime.operations.cubeToDataframe import cube_to_dataframe
+import matplotlib.pyplot as plt
+```
+
+**Aim:** Here we will explore a common use case that Spacetime addresses. We will be merging different files, each containing a different year of data that need to be aligned, trimmed and stacked into a spatiotemporal cube. We will run each line of Spacetime code and then explore what it has done to the files for illustration purposes. Much more code is depicted here than would be necessary in a script for processing data, although it is always good to check that things are going to plan as you write lines of code. We will write the final object out as a cleaned data cube that could than be read back into Spacetime for further processing, sent to other users for additional analyses, or used in other programs for plotting, modeling, analyses etc.
+
+
+
+### Stacking two differently formatted files
+```{python}
+
+# make script
+# make notebook
+# make demo video
+# load all to page
+
+# read files
+data = ["walkthrough_data/LULC_1995.tif", "walkthrough_data/India_cropped-area_1km_2016.tif"]
+
+# load data
+fo = read_data(data) 
+
+# let's query some attributes of this file object
+fo.number_of_bands() # check number of bands
+fo.extract_epsg_code() # check the epsg codes
+fo.get_raster_dimensions() # check the raster dimensions
+fo.pixel_size() # check pixel size
+fo.get_nodata_value() # check no data values
+```
+
+**Let's plot the two files in the object and see what they look like**
+```{python}
+# Get the array data
+arrays = fo.get_raster_data()
+
+# plot file 1
+plt.imshow(arrays[0], vmin=0, vmax=17, cmap='gray')
+plt.show()
+
+# plot file 2
+plt.imshow(arrays[1], vmin=0, vmax=100, cmap='gray')
+plt.show()
+```
+
+**Now we will align the files**
+```{python}
+
+# let's align the files (hand set the resolution, srs, and no data values)
+alignedFO = raster_align(data=fo, resolution=0.08, SRS=4326, noneVal=127)
+
+# let's query some attributes after aligning:
+alignedFO.extract_epsg_code() # check the epsg codes
+alignedFO.get_raster_dimensions() # check the raster dimensions
+alignedFO.pixel_size() # check pixel size
+alignedFO.get_nodata_value() # check no data values
+```
+
+**Let's plot the two files in the object again**
+```{python}
+# Get the array data
+arrays = alignedFO.get_raster_data()
+
+# plot file 1
+plt.imshow(arrays[0], vmin=0, vmax=17, cmap='gray')
+plt.show()
+
+# plot file 2
+plt.imshow(arrays[1], vmin=0, vmax=100, cmap='gray')
+plt.show()
+
+```
+
+
+
+**The files are aligned but have different bounding boxes**
+```{python}
+# here we use an intersection to trim the files. "union", pairs of corners and shape files are also options
+trimmedFO = raster_trim(alignedFO, method = "intersection")
+
+# check the raster dimensions to ensure we have a successful intersection
+trimmedFO.get_raster_dimensions() 
+
+```
+
+**Finally, we will export this cleaned file object as a cube object**
+```{python}
+# make a time object
+yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
+
+# set files as the variables and bands within each file as time variables
+cube = make_cube(data = trimmedFO, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
+
+## let's look at the structure of the cube
+cube.get_raster_data()
+```
+
+
+### Plotting the cube using spacetime
+
+**Plot temporal summary**
+```{python}
+
+# plot a summary using mean over time
+plot_cube(cube=cube, type="time_series", showPlot=True,summary="mean")
+
+```
+
+**Plot spatial data**
+```{python}
+
+# plot space
+plot_cube(cube=cube, type="space", showPlot=True)
+
+```
