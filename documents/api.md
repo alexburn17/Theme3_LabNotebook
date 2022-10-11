@@ -105,6 +105,7 @@ ds = read_data(data=rasterList)
 		* "bandstovar" = bands are variables
 	* **varNames** = a list of character strings that are the variable names for each file if the "filestovar" option is selected 
 	* **timeObj** = A time object created by `cube_time()` of the desired time length. If not specified, time defaults to integers 0 to length of cube stack.
+	* **inMemory** If `False` (default), Data arrays are stored as dask array and are lazy loading. If `True`, data arrays are read into memory when accessed.
 * Example function call:
 
 ```python
