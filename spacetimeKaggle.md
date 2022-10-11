@@ -40,4 +40,6 @@ The instance of the VM can be turned on and off and restarted if issues arrise b
 
 I recorded a video that shows how to start working in Kaggle below:
 
+[Getting Started with Kaggle on Spacetime](https://youtu.be/eJyzO5nE5Pw)
+
 
