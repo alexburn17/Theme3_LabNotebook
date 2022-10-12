@@ -1,5 +1,5 @@
 
-![spacetime logo](/Users/pburnham/Desktop/barracudaDocumentation/barraLogo.jpg)
+![Spacetime logo](barraLogo.jpg)
 
 
 -----------------
@@ -92,7 +92,7 @@ ds = read_data(data=rasterList)
 
 ```
 
-### `make_cube(data = None, fileName = None, organizeFiles="filestotime", organizeBands="bandstotime", varNames=None, timeObj=None)`
+### `make_cube(data = None, fileName = None, organizeFiles="filestotime", organizeBands="bandstotime", varNames=None, timeObj=None, inMemory = False)`
 * **Functionality:** Writes input objects as a cd4 file to disk and returns a virtualized cube object. **Note: for larger datasets, the writing of the cube to disk may take a few minutes**
 * **Input:** data = file object or cube object
 * **Output:** cube object
