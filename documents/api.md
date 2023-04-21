@@ -12,7 +12,7 @@ The main objective of the spacetime python is to make tasks like loading, rescal
 ## Spacetime Objects:
 
 
-###`fileObj.methods():`
+### `fileObj.methods():`
 **Description:**  File objects are the output of the `read_data()` fucntion. They are essentially a list object of all the raster files that were read in. All methods of a file object result in a list of outputs (one for each raster in the object). File objects can contain rasters of various scales, time lengths, and sizes. The functions `raster_scale()` and `raster_align()` may be used on file objects to return a file object that contains aligned and trimmed rasters.		
 **General output of methods:** A list of output objects of the length of the list of raster objects loaded by `read_data()`.		
 
@@ -45,7 +45,7 @@ dataArray = ds.get_data_array()
 
 
 
-###`cubeObj.methods():`
+### `cubeObj.methods():`
 **Description:**  Cube objects are the main operational unit in the spacetime package. Cube objects are cleaned, aligned D-dimensioal cube-liek datasets that minamally contain a data cube, a time dimension, and latitude and longitude (y, x) dimensions. They are the output of the `make_cube()` function. Cube objects may be passed to functions like `cube_smasher()`, `cube_plotter()` etc. to be opperated on mathmatically or functionally and visulized.
 **General output of methods:** The associated value for the cube object as specified by the method.		
 
