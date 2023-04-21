@@ -185,6 +185,18 @@ scale_time(cube=ds, scale="month", method="max")
 select_time(cube=cubeObj, range=['2000-02-29', '2000-04-30'], scale = "month", element=4)
 ``` 
 
+### `expand_time(cube, target_time, starting_scale = "month", target_scale = "day")`
+* **Functionality:** Take a cube and expand its time dimension by reapeating layers to match a target cubes time object.
+* **Inputs:** 
+	* **cube** = a spacetime cube object
+	* **target_time** = time object from the target cube	* **starting_scale** = the temporal scale of the starting cube ("day", "month", "year")
+	* **target_scale** = the temporal scale of the output cube ("day", "month", "year")
+	* **Output:** a new cube object
+* Example function call:
+
+```python
+newCube = expand_time(cube = cubeObj, target_time = cube.get_time(), starting_scale = "month", target_scale = "day")
+``` 
 
 
 ### `cube_smasher(function = None, eq = None, parentCube = None, **kwarg))`
