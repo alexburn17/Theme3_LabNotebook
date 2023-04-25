@@ -1,0 +1,379 @@
+---
+title: "Exploring Spacetime"
+output: html_document
+---
+
+
+Date created:  April 21, 2023            
+Author: P. Alexander Burnham
+
+**Summary:** The main objective of the spacetime python library is to make tasks like loading, rescaling, merging, and conducting mathmatical operations on spatiotemporal (or other D-dimensional data sets) easier for the user by providing a set of concise yet powerful functions. spacetime opperations utilize a cube-like structure for all data sets that makes storing and manipulating large D-dimensional datasets more efficient. For scientists working with spatiotemporal data (such as climate or weather data sets) spacetime is an ideal platform that allows the user to focus on the science rather than the coding. Here we explore the process of loading raster files, rescaling and writing to disc for a number of different data cleaning scenarios.
+
+
+```{r setup, include=F}
+
+#load the reticulate package  
+library(reticulate)
+
+# activate environment
+use_condaenv(condaenv = "~/anaconda3/envs/barra_python/bin/python/", required = TRUE)
+
+```
+
+
+```{python, include=F}
+import platform
+
+# make sure python 3.9 is loaded
+print(platform.python_version())
+
+
+``` 
+
+
+```{python, include=F}
+# load in functions from spacetime code base
+from spacetime.input.readData import read_data
+from spacetime.scale.rasterAlign import raster_align
+from spacetime.scale.rasterTrim import raster_trim
+from spacetime.objects.fileObject import file_object
+from spacetime.operations.cubeSmasher import cube_smasher
+from spacetime.operations.makeCube import make_cube
+from spacetime.operations.loadCube import load_cube
+from spacetime.graphics.dataPlot import plot_cube
+from spacetime.operations.time import cube_time, return_time, scale_time, select_time
+from spacetime.operations.cubeToDataframe import cube_to_dataframe
+```
+
+# Loading Data into Spacetime
+
+### Loading file names and creating a file object
+Spacetime takes file names/paths as lists. Here we set up a list of geotif files. The initial `read_data()` function in spacetime uses GDAL's python bindings at it's base. It can read any file type that GDAL can read. For the full list of supported types, see the [GDAL API](https://gdal.org/python/). When a great number of files need to be read in, automated python functions like `grep` can pull lists of file paths from a given directory into the system based on file extension or some other feature of the file names. Here we pull in a few different tifs manually.
+
+```{python}
+# create our list of file paths realtive to our directory
+data = ["demoData/N0_AKestrel_1976_1980.tif", "demoData/N0_AKestrel_1977_1981.tif", "demoData/N0_AKestrel_1978_1982.tif"]
+
+# spacetime function "read_data()" to create a file object
+ds = read_data(data)
+```
+
+### Querry the file object
+We have now created a file object. This object may be queried using a series of methods documented in the API. These methods return a list of the length of the number of files read in by the `read_data()` function. For instance, we can look at the EPSG code for each file. This will return a list of length 3.
+```{python}
+# examine the EPSG code for each file
+ds.get_epsg_code()
+```
+Information like nodata values, upperleft corners, number of bands etc. can be queried at this point, too. A full list if methods can be found on the [spacetime API](https://alexburn17.github.io/Theme3_LabNotebook/documents/api.html)
+```{python}
+
+ds.get_nodata_value()
+
+ds.get_UL_corner()
+
+ds.get_band_number()
+
+```
+
+### Examine the actual data sets
+We can extract a list of numpy arrays that contain the actual data from the files as well. Lets visualize them as an image rather than a large matrix.
+```{python}
+
+# import matplotlib 
+import matplotlib.pyplot as plt
+
+# extract the data sets from the file object
+plotData = ds.get_data_array()
+
+# plot the first file removing values below 0 (i.e. nodata vals)
+plt.imshow(plotData[0], vmin=0)
+plt.show()
+```
+
+Here we look at the dimensions of the first dataset in the list
+```{python}
+# what is the shape of the first file
+ds.get_data_array()[0].shape
+```
+
+### Lets turn these files into a cube object
+Each file, in the case of the kestral dataset, is a year (or rather a 4 year average). Each file as we saw above has a spatial dimension of 109 x 93 and a single band. We want a temporal spatial cube with the dimension of 109 x 93 x 3 (lat x lot x time).
+
+When we create a cube, we can pass time vectors and variable names to the `make_cube()` function. Otherwise, the function will make time an integer vector of 0 to T and variables will be assigned as characters A, B, C... through N. In this case, we only have one variable contained in the dataset but we have a time dimension that we can make explicit. First let's create a time vector of length 3 using the `cube_time()` function.
+```{python}
+# make a time vec
+yearObj = cube_time(start="1976", length=3, scale = "year")
+print(yearObj)
+```
+
+Now we will make a cube object from this file object. When cubes are created, a .nc4 file is written to disk. This allows for virtualization through a number of third-party python libraries like dask and netCDF4. The arguments `organizeFiles` and `organizeBands` set up the structure of the cube based on the data files. "filestotime" and "bandstotime" together will take every file and every band within every file and treat them as time slices when compiling the cube. If variables are stored in different files or bands, the "filestovar" or "bandstovar" arguments would be used instead.
+```{python}
+# make a cube
+cube3d = make_cube(data = ds, fileName = "test1.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
+```
+
+### Setting up a cube with multiple variables
+Here we have a set of files names 2001 and 2002. Each has three bands that are RGB color bands. Lets read the data in, check the number of bands to make sure, create a time vector, pass the correct variable names and output a cleaned cube object.
+```{python}
+# read files
+data1 = ["demoData/2001.tif", "demoData/2002.tif"]
+
+# make file object
+ds1 = read_data(data1)
+
+# check bands
+ds1.get_band_number()
+```
+
+We have the correct number of bands, 3. Lets assemble our cube. We use the "filestotime" and "bandstovar" arguments and pass R G and B to varNames as a list.
+```{python}
+# make time vector
+yearObj1 = cube_time(start="2001", length=2, scale = "year")
+
+# make cube
+cube4d = make_cube(data = ds1, fileName = "test2.nc4", organizeFiles = "filestotime", organizeBands="bandstovar", varNames=["R","G","B"], timeObj=yearObj1)
+
+```
+
+### Querrying our cube object
+Lets take a look at our cube object. All of the same commands work on a cube object as on a file object. However, what is returned is slightly different. Instead of a list of multiple returns, we have one unified cube now that returns a single value or object. Let's look at the extracted data from the 3d and 4d cubes we just made.
+```{python}
+# look at data
+cube3d.get_data_array()
+cube4d.get_data_array()
+```
+
+The xarray data structures that are returned can be operated upon like any numpy array. They also contains some useful metadata like the dimension of the cube and the names of those dimensions. Under coordinates for the 4d cube, we see the additional dimension named variables. This contains our 3 levels of R G and B. For a full list of cube object methods, see the [spacetime API](https://alexburn17.github.io/Theme3_LabNotebook/documents/api.html).
+
+
+# Spatial Scaling
+
+In the previous section, we set up several cubes from geotif files and explored some of the basic querrying and cube building functionality of spacetime. However, all of the files we were working with, had the same scales and grid sizes. Spacetime has the functionality to rescale rasters of different extents, grid sizes, epsg codes etc. and create a cleaned cube where all of those factors are consistent across the data layers. 
+
+### Loading file names and creating a file object
+Let's load two rasters that contain population data from India. We can then load the data up as a file object and compare some attributes between them.
+```{python}
+# read files and load data
+data = ["demoData/LULC_1995.tif", "demoData/India_cropped-area_1km_2016.tif"]
+ds = read_data(data)
+```
+
+```{python}
+# check number of bands
+ds.get_band_number()
+
+# check the epsg codes
+ds.get_epsg_code()
+
+# check the raster dimensions
+ds.get_dims()
+
+# check pixel size
+ds.get_pixel_size()
+
+# check no data values
+ds.get_nodata_value()
+```
+Let's plot the two files and compare them.
+```{python}
+import matplotlib.pyplot as plt
+
+# Get the array data
+arrays = ds.get_data_array()
+
+# plot file 1
+plt.imshow(arrays[0], vmin=0, vmax=17)
+plt.show()
+
+# plot file 2
+plt.imshow(arrays[1], vmin=0, vmax=100)
+plt.show()
+
+```
+
+### Let's rescale these files using some spacetime functions.
+Apart from the fact that both datasets are from approximately the same region, we can see that almost all of the attributes between these two files are different. Using `raster_scale()` we can get these two files to have the same spatial reference system,, pixel size and nodata value with cells aligned to the same lat and lon values.
+```{python}
+# lets align these files
+alignedDS = raster_align(data=ds, resolution=.08, SRS=4326, noneVal=127)
+```
+
+Let's look at these attributes now that we have run the align function.
+```{python}
+
+# check epsg codes
+alignedDS.get_epsg_code()
+# get raster dimensions
+alignedDS.get_dims()
+# pixel size
+alignedDS.get_pixel_size()
+# check no data values
+alignedDS.get_nodata_value()
+```
+
+Lets also look at the rescaled images.
+```{python}
+# get rescaled data
+scaledArray = alignedDS.get_data_array()
+
+# plot file 1
+plt.imshow(scaledArray[0], vmin=0, vmax=17)
+plt.show()
+
+# plot file 2
+plt.imshow(scaledArray[1], vmin=0, vmax=100)
+plt.show()
+```
+
+### Cropping file objects
+We can see now that the only difference is the extent of the files. The first file covers more surface area of the globe. Lets crop the files to have the same greatest common bounding box.
+```{python}
+# trim the file object
+trimmedDS = raster_trim(alignedDS)
+```
+```{python}
+# lets compare the dimensions of the new objects
+trimmedDS.get_dims()
+
+```
+
+Comparing the plotted images reveals that the files are now propperly aligned and trimmed
+```{python}
+# get data
+trimmedArray = trimmedDS.get_data_array()
+
+# plot file 1
+plt.imshow(trimmedArray[0], vmin=0, vmax=17)
+plt.show()
+
+# plot file 2
+plt.imshow(trimmedArray[1], vmin=0, vmax=100)
+plt.show()
+```
+
+### Make a cube
+Now that we have cleaned data sets, we can assemble them into a cube as shown in the previous vignette. Lets start be creating a time object. `cube_time()` allows you to create a time vector that skips user-specified chunks of time using the skips arguemnt.
+```{python}
+# create time vec
+yearObj = cube_time(start="1995", length=2, scale = "year", skips = 21)
+```
+
+We will now create a cube by assigning files and bands to time.
+```{python}
+cube = make_cube(data = trimmedDS, fileName = "indiaCube.nc4", organizeFiles = "filestotime", organizeBands="bandstotime", timeObj = yearObj)
+
+```
+
+Finally, lets look at the data
+```{python}
+cube.get_data_array()
+```
+
+## Temporal Scaling
+
+### Loading file names and create a cube
+Let's load two raster files that contain 101 bands each. Each band is a year. The datasets contain the same data, however, they are at different spatial scales. We will first create the file object
+```{python}
+# read files and load data
+data = ["demoData/Carya_ovata_sim_disc_10km.tif", "demoData/Carya_ovata_sim_disc_1km.tif"]
+ds = read_data(data)
+```
+
+Next, we will rescale and trim the data to the same grid size. With no arguments specified, the functions will use the first file's attributes to rescale the rest.
+```{python}
+# scale data
+scaledData = raster_align(ds)
+trimmedData = raster_trim(scaledData)
+```
+Finally, we will make a cube Object. For demonstration purposes, we will assign each band to be a month for 101 months. Each file will be assigned to a variable (10km and 1km).
+```{python}
+# set up time vec for 101 months starting from 2000-10-12
+monthObj = cube_time(start="2000-10-12", length=101, scale = "month")
+monthObj
+
+# make cube
+cube = make_cube(data = trimmedData, fileName = "cube1.nc4", organizeFiles = "filestovar", organizeBands="bandstotime", timeObj = monthObj, varNames = ["10km", "1km"])
+```
+
+### Scale time        
+This function takes a cube with a time dimension and rescales along that time dimension based on an intended scale and summarizing method. Here we calculate yearly averages by passing "year" to scale and "mean" to method.
+```{python}
+# scale time by year
+timeScaled = scale_time(cube=cube, scale="year", method="mean")
+```
+
+Let's examine the data structure after rescaling
+```{python}
+# extract data from cube
+timeScaled.get_data_array()
+```
+Now we have 9 time points at the yearly scale where averages between months are the temporal slices in the cube. The spatial scale has not changed.
+
+### Select Time
+In addition to some simple rescaling, which will be expanded upon soon, we have the ability to select temporal slices within the cube using the `selecct_time()` function. I will add a new time vector to our cube at the daily scale for demonstration purposes.
+```{python}
+# a new time vec
+monthObjDay = cube_time(start="2000-10-12", length=101, scale = "day")
+
+# make cube
+cubeDay = make_cube(data = trimmedData, fileName = "cubeDay.nc4", organizeFiles = "filestovar", organizeBands="bandstotime", timeObj = monthObjDay, varNames = ["10km", "1km"])
+```
+
+Using the select time function, we can select a specific day/month/year within a range or for the entire dataset. For example, to choose only the first of each month for the entire cube we would write this:
+```{python}
+# the first of the month
+selectedDay = select_time(cube=cubeDay, range="entire", scale = "day", element=1)
+
+# print the time vector
+selectedDay.get_time()
+```
+
+Now we have a cube with a time dimension of length 3 where each slice is the first of each month in the dataset. We could also select months and do so within a range. Let's return to our monthly data set and select Aprils between 2000 and 2005.
+```{python}
+# select aprils between 2001 and 2003
+selectedApril = select_time(cube=cube, range=["2000", "2005"], scale = "month", element=4)
+
+# print the time vector
+selectedApril.get_time()
+```
+
+
+
+## Cube Operations
+
+### Create a cube
+Let's start by creating a cube as we have done previously for the yearly Carya ovata data.
+
+We will rescale and trim the data sets
+```{python}
+# scale data
+scaledData = raster_align(ds)
+trimmedData = raster_trim(scaledData)
+```
+Finally, we will make a cube Object. Each file will be assigned to a variable (10km and 1km).
+```{python}
+# set up time vec for 101 years
+yearObj = cube_time(start="2000", length=101, scale = "year")
+
+# make cube
+cube = make_cube(data = trimmedData, fileName = "yearCube.nc4", organizeFiles = "filestovar", organizeBands="bandstotime", timeObj = yearObj, varNames = ["10km", "1km"])
+
+```
+
+### Mathmatical Operations
+We can use a combination of cubes, numpy arrays and scalar values to rescale values in a cube or compute some important cell-wise quantity. Here we take our cube, add 1000 to each cell and raise it to the 2nd power. Parent cube is the cube whose structure you want the output cube to use. 
+```{python}
+import numpy as np
+
+answer = cube_smasher(eq = "a + 1000 ** c", a=cube, b=1000, c = 2, parentCube = cube)
+
+# pre operations value = 0
+cube.get_data_array()[0,0,50,50]
+
+# after the operation = 1000000
+answer.get_data_array()[0,0,50,50]
+
+```
+
+That checks out. 0 + 1000 raised to the second power is 1000000. 
+

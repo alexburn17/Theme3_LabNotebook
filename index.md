@@ -7,6 +7,8 @@ Here I document the use and progress of the spacetime python library with a seri
 * [API](documents/api.md)
 * [PyPI Page Draft](documents/description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
+	* [Python Walkthrough Script](templates/spacetime_walkthrough.py) 
+	* [R Markdown Script](templates/spacetime_walkthrough.Rmd)
 * [Python Dependancies](documents/requires.txt)
 * [Github Repository](https://github.com/alexburn17/spacetime_demo)
 
