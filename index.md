@@ -1,9 +1,23 @@
 ![spacetime logo](documents/barraLogo.jpg)
 
-## Description:
-Here I document the use and progress of the spacetime python library with a series of notebooks. These range from describing suported data type to trimming data layers, creating cubes and opperating on cleaned data.
+# Description:
+The main objective of the spacetime package is to make tasks like loading, rescaling, merging, and conducting mathmatical operations on spatiotemporal (or other D-dimensional data sets) easier for the user by providing a set of concise yet powerful functions. Spacetime opperations utilize a cube-like structure for all data sets that makes storing and manipulating large D-dimensional datasets more efficient. For scientists working with spatiotemporal data (such as climate or weather data sets) spacetime is an ideal platform that allows the user to focus on the science rather than the coding. Spacetime is in the beta stage (version number = 0.0.1) as a R package and a Python code base. A full Python library will be available on PyPI soon! Additional functionality will be added on a regular basis. The current functionality of spacetime is below:
 
-## Documentation: 
+*Spacetime is a product of [Barracuda](https://biobarracuda.org/), a collaboration between the University of Vermont and the University of Maine. Barracuda's mission is to harness diverse current and historic data and new mechanistic models across the continental United States to help us better predict and adapt to climate change impacts on biodiversity and rural communities. This project is open source and funded by a National Science Foundation EPSCoR grant*
+
+## Spacetime - The R Package 
+Spacetime is currently available as a package in R. It is in it's beta version (v0.0.1) and can be installed through github via dev tools. Instructions and documentation are below.
+
+### Documentation: 
+* [API](documents/api-r.md)
+* [Spacetime Installation and Walkthrough Notebook](spaceTime_vignettes/spacetimeDoc.html)
+	* [R Markdown file](templates/spacetimeDoc.Rmd)
+* [Github Repository](https://github.com/alexburn17/spacetime_r)
+
+## Spacetime - The Python Library 
+Spacetime will soon be available as a stand-alone Python Library. In the meantime, the codebase can be installed via github and its functions can be accesed using the below templates.
+
+### Documentation: 
 * [API](documents/api.md)
 * [PyPI Page Draft](documents/description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
@@ -12,18 +26,7 @@ Here I document the use and progress of the spacetime python library with a seri
 * [Python Dependancies](documents/requires.txt)
 * [Github Repository](https://github.com/alexburn17/spacetime_demo)
 
-## Using Spacetime in Kaggle:
-Kaggle is an online virtual computing environment. I have installed python and spacetime's dependancies in a virtual environment. Data can be uploaded, operated on using spacetime functions in a notebook. The outputs can be downloaded of off the VM. This allows the user to explore spacetime on their own datasets without installing python on their local machine. This is the simplest way to use spacetime at the moment. Instructions are below.
-
-* [Click to use Spacetime through Kaggle](spacetimeKaggle.md)
-
-## Using Spacetime in R Studio:
-Spacetime is currently a python library but can be accessed in the R Studio environment using the reticulate package. This will allow the user to switch back and forth between Python and R in a R Markdown file. The following link gives installation instructions.
-
-* [Click to use Spacetime through R Studio](pythonViaR.md)
-
-
-## Spacetime Vignettes:
+### Spacetime Vignettes:
 When using vignettes, simply copy spacetime commands directly into your own driver. (Note: vignettes will continue to grow and more will be added.)
 
 * [Loading Files and Making Cubes](spaceTime_vignettes/readingFiles.html)
@@ -32,22 +35,19 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 * [Writing and Reading Cubes](spaceTime_vignettes/readAndWrite.html)
 * [Cube Operations](spaceTime_vignettes/cubeOps.html)
 * [Plotting Cubes](spaceTime_vignettes/plotting.html)
-	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 	
+	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 
 
-## All Team Meeting (August 2022):
-Files and a videos for the material presented by Theme 3 for the August 2022 all teams meeting.
-
-**Presentation:**
-
-* [Theme Three Presentation Video](https://www.youtube.com/watch?v=RIKNoj4rkmE)
-* [Theme 3 Slides](documents/All_Team_Theme3.pptx)
-
-**Demonstration:**
+## Spacetime Archived Content:
 
 
-* [Theme Three Spacetime Demo Video](https://www.youtube.com/watch?v=6yP55cXeoN4)
-* [All Teams Meeting Demonstration](spaceTime_vignettes/AllTeams_Demo.html)
-* [All Teams Meeting Script](templates/AllTeams_Demo.Rmd)
+* [Click to use Spacetime through Kaggle](spacetimeKaggle.md)
+* [Spacetime as a Python Library in R Studio](pythonViaR.md)
+* **All Team Meeting Content (August 2022):**
+	* [Theme Three Presentation Video](https://www.youtube.com/watch?v=RIKNoj4rkmE)
+	* [Theme 3 Slides](documents/All_Team_Theme3.pptx)
+	* [Theme Three Spacetime Demo Video](https://www.youtube.com/watch?v=6yP55cXeoN4)
+	* [All Teams Meeting Demonstration](spaceTime_vignettes/AllTeams_Demo.html)
+
 
 
 

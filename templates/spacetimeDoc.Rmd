@@ -1,0 +1,80 @@
+---
+title: "Spacetime Installation Example"
+output: html_document
+date: "2023-05-01"
+---
+### Installing A Python Miniconda Environment
+Spacetime is a package built in python that makes cleaning spatiotemporal datasets a much simpler task than it has been previously. Because it is built in python, a python installtion is required. To install spacetime from github, first install miniconda using the reticulate package. This only needs to be completed once before the first installation. Subsequent updates do not require this step.
+```{r}
+
+#library(reticulate)
+
+#install_miniconda(path = miniconda_path(), force = TRUE)
+
+```
+
+
+### Install spacetime from github
+Now that we have a miniconda environment to work from, we can proceed with installing spacetime.
+```{r, warning = FALSE, message = FALSE}
+
+library(devtools)
+
+install_github("alexburn17/spacetime_R") # install spacetime
+
+library(spacetime) # load the package
+
+```
+
+### Spacetime Example 
+Now that spacetime is installed we can explore its capabilities. Here we load in two raster files and read them in as a spacetime file object 
+```{r, warning = FALSE, message = FALSE}
+
+# get tif files from CpCM folder
+dataPaths <- list.files(path="/Users/pburnham/Documents/data", pattern="*.tif", full.names=TRUE, recursive=FALSE)
+
+# read files in as a spacetime file object
+fileObj <- spacetime::read_data(dataPaths)
+
+```
+
+
+Let's check the EPSG codes in the file object. Data and information can be extracted using the dollar sign operator and one of the methods stored in the object. A full list of methods can be found in the API.
+```{r, warning = FALSE, message = FALSE}
+
+# extract EPSG codes
+fileObj$get_epsg_code()
+
+```
+
+We will now align the files and trim them to the same bounding box.
+```{r, warning = FALSE, message = FALSE}
+
+# align rasters
+alignedObj <- raster_align(data=fileObj, noneVal = -9999, SRS=4326, resolution = .008)  
+
+# trim rasters
+trimmedObj <- raster_trim(alignedObj)
+
+```
+
+Let's ensure that the changes in resolution and no data value worked.
+```{r, warning = FALSE, message = FALSE}
+
+# get resolution
+trimmedObj$get_pixel_size() 
+
+# get no data value
+trimmedObj$get_nodata_value 
+
+```
+
+Finally, let's turn these cleaned files into a unified data cube using the `make_cube()` function. We specify that files are separate times and the bands within the files are time points as well. A full list of arguments may be found in the API. We now have a cleaned and aligned object with only four major function calls.
+```{r, warning = FALSE, message = FALSE}
+
+cube <- make_cube(data = trimmedObj, fileName = "name.nc4", organizeFiles = "filestotime", organizeBands = "bandstotime")
+
+```
+
+ 
+

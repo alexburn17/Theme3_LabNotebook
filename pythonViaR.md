@@ -2,6 +2,8 @@
 
 ### Installing spacetime and Python for use in R Studio
 
+Spacetime is currently a python code base but can be accessed in the R Studio environment using the reticulate package. This will allow the user to switch back and forth between Python and R in a R Markdown file. The following link gives installation instructions.
+
 For members of the team that already use python, feel free to use the code base/future library in the way that you prefer. I will list the link to the repositiry on github and a driver script containing the loaded files and function paths at its head for your use. 
 
 Some of us may not use python on a regular basis, so I have set up some basic instructions for getting spacetime up and running on your machines for testing purposes. The general stratagy here is to install python 3.9 or higher, create a python environment to use in R Studio using the "reticulate" package. Next, we will install the dependancies (python libraries) required to use Spacetime, clone the repository that contains the Spacetime source code, and use an R markdown template that I will provide below to use the spacetime functions. Detailed instructions for each of these steps are below. A very helpful video for walking through these steps can be found [here](https://docs.rstudio.com/tutorials/user/using-python-with-rstudio-and-reticulate/).

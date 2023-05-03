@@ -1,6 +1,7 @@
 ![spacetime logo](documents/barraLogo.jpg)
 
 ## Using spacetime in Kaggle
+Kaggle is an online virtual computing environment. I have installed python and spacetime's dependancies in a virtual environment. Data can be uploaded, operated on using spacetime functions in a notebook. The outputs can be downloaded of off the VM. This allows the user to explore spacetime on their own datasets without installing python on their local machine. This is the simplest way to use spacetime at the moment. Instructions are below.
 
 
 ### Step 1: Create an account
