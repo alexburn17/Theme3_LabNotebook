@@ -12,10 +12,12 @@ The main objective of the spacetime package is to make tasks like loading, resca
 
 
 ## Spacetime - The R Package 
+
+
+![spacetime logo](documents/st_R.jpg)
 Spacetime is currently available as a package in R. It is in it's beta version (v0.0.1) and can be installed through github via dev tools. Instructions and documentation are below.
 
 
-<img src=https://github.com/alexburn17/Theme3_LabNotebook/blob/main/documents/st_R.jpg?raw=true  width="300" align="right">
 
 
 ### Documentation: 
@@ -45,10 +47,11 @@ R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://
 * [BibTeX Citation for LaTeX Users](documents/spacetime_bibtex.txt)
 
 ## Spacetime - The Python Library 
+![spacetime logo](documents/st_Py.jpg)
 Spacetime will soon be available as a stand-alone Python Library. In the meantime, the codebase can be installed via github and its functions can be accesed using the below templates.
 
 
-<img src=https://github.com/alexburn17/Theme3_LabNotebook/blob/main/documents/st_Py.jpg?raw=true  width="300" align="right">
+
 
 
 ### Documentation: 
