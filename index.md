@@ -5,16 +5,24 @@ The main objective of the spacetime package is to make tasks like loading, resca
 
 *Spacetime is a product of [Barracuda](https://biobarracuda.org/), a collaboration between the University of Vermont and the University of Maine. Barracuda's mission is to harness diverse current and historic data and new mechanistic models across the continental United States to help us better predict and adapt to climate change impacts on biodiversity and rural communities. This project is open source and funded by a National Science Foundation EPSCoR grant*
 
+
+
+
+
 ## Spacetime - The R Package 
 Spacetime is currently available as a package in R. It is in it's beta version (v0.0.1) and can be installed through github via dev tools. Instructions and documentation are below.
 
+<img src=documents/st_r.jpg  width="300" align="right">
+
 ### Documentation: 
-* [API](documents/api-r.md)
+* [Spacetime API - R](documents/api-r.md)
 * [Spacetime Installation and Walkthrough Notebook](spaceTime_vignettes/spacetimeDoc.html)
 	* [R Markdown file](templates/spacetimeDoc.Rmd)
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
 
-### Citing Spacetime
+### Installing Spacetime:
+
+### Citing Spacetime:
 
 Please use the following citation when publishing works that use spacetime:
 
@@ -26,8 +34,10 @@ R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://
 ## Spacetime - The Python Library 
 Spacetime will soon be available as a stand-alone Python Library. In the meantime, the codebase can be installed via github and its functions can be accesed using the below templates.
 
+<img src=documents/st_Py.jpg  width="300" align="right">
+
 ### Documentation: 
-* [API](documents/api.md)
+* [Spacetime API - Python](documents/api.md)
 * [PyPI Page Draft](documents/description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
 	* [Python Walkthrough Script](templates/spacetime_walkthrough.py) 
