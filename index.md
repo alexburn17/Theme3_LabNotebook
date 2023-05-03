@@ -1,6 +1,8 @@
 ![spacetime logo](documents/barraLogo.jpg)
 
 # Description:
+
+***
 The main objective of the spacetime package is to make tasks like loading, rescaling, merging, and conducting mathmatical operations on spatiotemporal (or other D-dimensional data sets) easier for the user by providing a set of concise yet powerful functions. Spacetime opperations utilize a cube-like structure for all data sets that makes storing and manipulating large D-dimensional datasets more efficient. For scientists working with spatiotemporal data (such as climate or weather data sets) spacetime is an ideal platform that allows the user to focus on the science rather than the coding. Spacetime is in the beta stage (version number = 0.0.1) as a R package and a Python code base. A full Python library will be available on PyPI soon! Additional functionality will be added on a regular basis. The current functionality of spacetime is below:
 
 *Spacetime is a product of [Barracuda](https://biobarracuda.org/), a collaboration between the University of Vermont and the University of Maine. Barracuda's mission is to harness diverse current and historic data and new mechanistic models across the continental United States to help us better predict and adapt to climate change impacts on biodiversity and rural communities. This project is open source and funded by a National Science Foundation EPSCoR grant*
@@ -21,6 +23,15 @@ Spacetime is currently available as a package in R. It is in it's beta version (
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
 
 ### Installing Spacetime:
+Spacetime is a package built in python that makes cleaning spatiotemporal datasets a much simpler task than it has been previously. Because it is built in python, a python installtion is required. To install spacetime from github, first install miniconda using the reticulate package. This only needs to be completed once before the first installation. Subsequent updates do not require this step.
+
+```r
+library(reticulate)install_miniconda(path = miniconda_path(), force = TRUE)
+```
+
+
+Now that we have a miniconda environment to work from, we can proceed with installing spacetime.
+```rlibrary(devtools)install_github("alexburn17/spacetime_R") # install spacetimelibrary(spacetime) # load the package```
 
 ### Citing Spacetime:
 
@@ -55,6 +66,8 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 * [Cube Operations](spaceTime_vignettes/cubeOps.html)
 * [Plotting Cubes](spaceTime_vignettes/plotting.html)
 	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 
+
+
 
 ## Spacetime Archived Content:
 

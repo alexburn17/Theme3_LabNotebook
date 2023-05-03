@@ -12,62 +12,58 @@ The main objective of the spacetime R package is to make tasks like loading, res
 ## Spacetime Objects:
 
 
-### `fileObj.methods():`
-**Description:**  File objects are the output of the `read_data()` fucntion. They are essentially a list object of all the raster files that were read in. All methods of a file object result in a list of outputs (one for each raster in the object). File objects can contain rasters of various scales, time lengths, and sizes. The functions `raster_scale()` and `raster_align()` may be used on file objects to return a file object that contains aligned and trimmed rasters.		
-**General output of methods:** A list of output objects of the length of the list of raster objects loaded by `read_data()`.		
+### `fileObj:`
+**Description:**  File objects are the output of the `read_data()` fucntion. They are essentially a list object of all the raster files that were read in. All querrying data stored in a file object will result in a list of outputs (one for each raster in the object). File objects can contain rasters of various scales, time lengths, and sizes. The functions `raster_scale()` and `raster_align()` may be used on file objects to return a file object that contains aligned and trimmed rasters.		
+**General output:** A list of output objects of the length of the list of raster objects loaded by `read_data()`.		
 
-* `get_GDAL_data()` - Extracts GDAL data object			
-* `get_epsg_code()` - extracts spatial reference system EPSG code				
-* `get_units()`	- extracts units of spatial grid	
-* `get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
-* `get_band_number()` - Extracts the number of bands		
-* `change_time(start, stop, interval)` - Changes the time values associated with bands
-	* start = (int or list)	of starting time/date/year 
-	* start = (int or list)	of ending time/date/year
-	* interval = (numeric) interval between times
-* `get_time()` - extracts time values (default = 0-N)		
-* `get_dims()` - Extracts raster x and y dimensions				
-* `get_nodata_value()` - returns no data values		
-* `get_data_array()` - get full raster data set as numpy array		
-* `get_bands(min=1, max=2, rasters = [0])` get subset of raster data as numpy array
+* `$get_GDAL_data()` - Extracts GDAL data object			
+* `$get_epsg_code()` - extracts spatial reference system EPSG code				
+* `$get_units()`	- extracts units of spatial grid	
+* `$get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
+* `$get_band_number()` - Extracts the number of bands		
+* `$get_time()` - extracts time values (default = 0-N)		
+* `$get_dims()` - Extracts raster x and y dimensions				
+* `$get_nodata_value()` - returns no data values		
+* `$get_data()` - get full raster data set as numpy array		
+* `$get_bands(min=1, max=2, rasters = [0])` get subset of raster data as numpy array
 	* min = (int >= 1) first raster band to extract
 	* max = (int <= number of bands) last raster band to extract
 	* rasters = (list) list of rasters (0-number of rasters) to pull from	 
-* `get_lat()` - get latitude values		
-* `get_lon()` - get longitude values		
+* `$get_lat()` - get latitude values		
+* `$get_lon()` - get longitude values		
 
-```python
+```r
 # extract list of raster data cubes from file object
-dataArray = ds.get_data_array()
+dataArray <- ds$get_data()
 
 ```
 
 
 
 
-### `cubeObj.methods():`
+### `cubeObj:`
 **Description:**  Cube objects are the main operational unit in the spacetime package. Cube objects are cleaned, aligned D-dimensioal cube-liek datasets that minamally contain a data cube, a time dimension, and latitude and longitude (y, x) dimensions. They are the output of the `make_cube()` function. Cube objects may be passed to functions like `cube_smasher()`, `cube_plotter()` etc. to be opperated on mathmatically or functionally and visulized.
-**General output of methods:** The associated value for the cube object as specified by the method.		
+**General output:** The associated value for the cube object as specified by the method.		
 
-* `get_GDAL_data()` - Extracts orignal data object			
-* `get_epsg_code()` - extracts spatial reference system EPSG code				
-* `get_units()`	- extracts units of spatial grid	
-* `get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
-* `get_band_number()` - Extracts the number of bands		
-* `get_time()` - extracts time values
+* `$get_GDAL_data()` - Extracts orignal data object			
+* `$get_epsg_code()` - extracts spatial reference system EPSG code				
+* `$get_units()`	- extracts units of spatial grid	
+* `$get_UL_corner()`	- Extracts lat and long coords of the upper left corner	
+* `$get_band_number()` - Extracts the number of bands		
+* `$get_time()` - extracts time values
 			
-* `get_dims()` - Extracts raster x and y dimensions				
-* `get_nodata_value()` - returns no data values		
-* `get_data_array(variables)` - return a full D-dimensional raster data set as an xarray dataArray. 
+* `$get_dims()` - Extracts raster x and y dimensions				
+* `$get_nodata_value()` - returns no data values		
+* `$get_data(variables)` - return a full D-dimensional raster data set as an xarray dataArray. 
 	* variables = selects variables to return if cube was created with the "filestovar" option. Takes a list of character string variable names. 				 
-* `get_lat()` - get latitude values		
-* `get_lon()` - get longitude values
+* `$get_lat()` - get latitude values		
+* `$get_lon()` - get longitude values
 
-*  `get_var_names()` - get the variable names of the cube		
+* `$get_var_names()` - get the variable names of the cube		
 
-```python
+```r
 # extract latitude dimension from cube object
-lat = ds.get_lat()
+lat <- ds$get_lat()
 
 ```
 
@@ -86,7 +82,7 @@ lat = ds.get_lat()
 * **Additional Arguments:** None
 * Example function call:
 
-```python
+```r
 # read in data set from raster files
 ds = read_data(data=rasterList)
 
