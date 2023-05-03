@@ -1,0 +1,8 @@
+
+@Manual{,
+    title = {spacetime: A package for cleaning and analyzing spatiotemporal data in R},
+    author = {P.A. Burnham, M. Dube, Q. Dubois, N.J. Gotelli, and B.J. McGill},
+    year = {2023},
+    note = {R package version 0.0.1},
+    url = {https://github.com/alexburn17/spacetime_r},
+}

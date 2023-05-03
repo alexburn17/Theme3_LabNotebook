@@ -14,6 +14,15 @@ Spacetime is currently available as a package in R. It is in it's beta version (
 	* [R Markdown file](templates/spacetimeDoc.Rmd)
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
 
+### Citing Spacetime
+
+Please use the following citation when publishing works that use spacetime:
+
+*P.A. Burnham, M. Dube, Q. Dubois, N.J. Gotelli, and B.J. McGill (2023). spacetime: A package for cleaning and analyzing spatiotemporal data in
+R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://github.com/alexburn17/spacetime_r)*
+
+* [BibTeX Citation for LaTeX Users](documents/spacetime_bibtex.txt)
+
 ## Spacetime - The Python Library 
 Spacetime will soon be available as a stand-alone Python Library. In the meantime, the codebase can be installed via github and its functions can be accesed using the below templates.
 
