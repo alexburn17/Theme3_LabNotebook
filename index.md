@@ -53,7 +53,7 @@ R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://
 
 
 
-<img src="documents/st_py.jpg" width="300" align="right"> 
+<img src="documents/st_Py.jpg" width="300" align="right"> 
 
 
 
