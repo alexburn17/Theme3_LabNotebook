@@ -1,4 +1,4 @@
-![spacetime logo](documents/barraLogo.jpg)
+![spacetime logo](documents/barraLogo.png)
 
 # Description:
 
