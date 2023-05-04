@@ -5,7 +5,7 @@
 ***
 The main objective of the spacetime package is to make tasks like loading, rescaling, merging, and conducting mathmatical operations on spatiotemporal (or other D-dimensional data sets) easier for the user by providing a set of concise yet powerful functions. Spacetime opperations utilize a cube-like structure for all data sets that makes storing and manipulating large D-dimensional datasets more efficient. For scientists working with spatiotemporal data (such as climate or weather data sets) spacetime is an ideal platform that allows the user to focus on the science rather than the coding. Spacetime is in the beta stage (version number = 0.0.1) as a R package and a Python code base. A full Python library will be available on PyPI soon! Additional functionality will be added on a regular basis. The current functionality of spacetime is below:
 
-<img src="img/barracuda_logo_final.png" width="180" align="left">
+<img src="img/barracuda_logo_final.png" width="200" align="left">
 
 *Spacetime is a product of [Barracuda](https://biobarracuda.org/), a collaboration between the University of Vermont and the University of Maine. Barracuda's mission is to harness diverse current and historic data and new mechanistic models across the continental United States to help us better predict and adapt to climate change impacts on biodiversity and rural communities. This project is open source and funded by a National Science Foundation EPSCoR grant*
 
