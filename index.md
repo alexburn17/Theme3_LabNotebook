@@ -26,7 +26,7 @@ Spacetime is currently available as a package in R. It is in it's beta version (
 
 
 ### Documentation: 
-* [Spacetime API - R](documents/api-r.md)
+* [Spacetime API - R](api-r.md)
 * [Spacetime Installation and Walkthrough Notebook](spaceTime_vignettes/spacetimeDoc.html)
 	* [R Markdown file](templates/spacetimeDoc.Rmd)
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
@@ -66,8 +66,8 @@ Spacetime will soon be available as a stand-alone Python Library. In the meantim
 
 
 ### Documentation: 
-* [Spacetime API - Python](documents/api.md)
-* [PyPI Page Draft](documents/description.md)
+* [Spacetime API - Python](api.md)
+* [PyPI Page Draft](description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
 	* [Python Walkthrough Script](templates/spacetime_walkthrough.py) 
 	* [R Markdown Script](templates/spacetime_walkthrough.Rmd)
