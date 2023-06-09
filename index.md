@@ -20,7 +20,6 @@ The main objective of the spacetime package is to make tasks like loading, resca
 
 <img src="img/st_R.png" width="300" align="right">
 
-
 Spacetime is currently available as a package in R. It is in it's beta version (v0.0.1) and can be installed through github via dev tools. Instructions and documentation are below.
 
 

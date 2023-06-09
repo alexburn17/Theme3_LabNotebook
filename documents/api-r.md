@@ -1,5 +1,5 @@
 
-![Spacetime logo](barraLogo.jpg)
+![Spacetime logo](img/barraLogo.png)
 
 
 -----------------
