@@ -110,7 +110,7 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 
 
 
-### `raster_align(data=None, resolution=None, SRS=None, noneVal=None, algorithm = "near)`
+### `raster_align(data=None, resolution=None, SRS=None, noneVal=None, algorithm = "near")`
 * **Functionality:** Sets input object to have same spatial reference system and resolution and alignment.
 * **Input:** data = file object as outputted by `read_data()` 
 * **Output:** aligned and rescaled cube or file objects
