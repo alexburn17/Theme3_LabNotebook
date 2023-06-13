@@ -1,5 +1,5 @@
 
-![Spacetime logo](img/barraLogo.jpg)
+![Spacetime logo](img/barraLogo.png)
 
 
 -----------------
@@ -114,7 +114,7 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 
 
 
-### `raster_align(data=None, resolution=None, SRS=None, noneVal=None)`
+### `raster_align(data=None, resolution=None, SRS=None, noneVal=None, algorithm="near")`
 * **Functionality:** Sets input object to have same spatial reference system and resolution and alignment.
 * **Input:** data = file object as outputted by `read_data()` 
 * **Output:** aligned and rescaled cube or file objects
@@ -125,6 +125,23 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 		* **Default value:** EPSG of first data set in input object
 	* **noneVal** = (numeric) no data value to be used by all datasets in the outputted spacetime object.
 		* **Default value:** no data value of first data set in input spacetime object
+	* **algorithm** = (character string) The aggregation algorithm method. 
+		* **Default value:** "near"
+		* **Possible values:** 
+			* 	"near": nearest neighbour resampling (default, fastest algorithm, worst interpolation quality).
+			*  "bilinear": bilinear resampling.
+			*  "cubic": cubic resampling.
+			*  "cubicspline": cubic spline resampling.
+			*  "lanczos": Lanczos windowed sinc resampling.
+			*  "average": average resampling, computes the weighted average of all non-NODATA contributing pixels.
+			*  "rms": root mean square / quadratic mean of all non-NODATA contributing pixels 
+			*  "mode": mode resampling, selects the value which appears most often of all the sampled points. In the case of ties, the first value identified as the mode will be selected.
+			*  "max": maximum resampling, selects the maximum value from all non-NODATA contributing pixels.
+			*  "min": minimum resampling, selects the minimum value from all non-NODATA contributing pixels.
+			*  "med": median resampling, selects the median value of all non-NODATA contributing pixels.
+			*  "q1": first quartile resampling, selects the first quartile value of all non-NODATA contributing pixels.
+			*  "q3": third quartile resampling, selects the third quartile value of all non-NODATA contributing pixels.
+			*  "sum": compute the weighted sum of all non-NODATA contributing pixels 
 * Example function call:
 
 ```python
