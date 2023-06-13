@@ -119,7 +119,8 @@ make_cube(data = fileObject, fileName = "test.nc4", organizeFiles = "filestovar"
 * **Input:** data = file object as outputted by `read_data()` 
 * **Output:** aligned and rescaled cube or file objects
 * **Additional Arguments:** 
-	* **resolution** = (numeric) intended grid size of the outputted data set in either degrees or meters depending on the spatial reference system in use.
+	* **resolution** = (numeric or string) intended pixel size of the outputted data set in either degrees or meters depending on the spatial reference system in use or "min" (the lowest resolution raster's pixel size) or "max" (the highest resolution raster's pixel size)
+
 		* **Default value:** largest resolution in data set in input spacetime object
 	* **SRS** = (int) intended 4-digit spatial reference system code that all data sets in the outputted spacetime object will use.
 		* **Default value:** EPSG of first data set in input object
