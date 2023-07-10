@@ -242,6 +242,22 @@ outputCube = cube_smasher(eq = "a + b", a=obj1, b=obj2, parentCube = obj1)
 df = cube_to_dataframe(cube=cubeObject)
 ```
 
+### `plot_cube(cube, type="space", variable = None, summary="mean", showPlot = True)`
+* **Functionality:** Plots data sets as either a heatmap playable over the time dimension if applicable, or a time series plot of a user selected summary statistic.
+* **Input:** data = cube object
+* **Output:** data frame used to make the plot with the figure shown as a side effect
+* **Additional Arguments:**
+	* **variable** = (char) character string of the variable to plot spatialy if their are more than one. If not specified default is the first variable.
+	* **plot_type** = (char) select between spatial ("space") or temporal ("time_series").
+	* **deviation_coefficient** Number of standard deviations to show in control chart (default = 1)
+	* **dataSet** = (int) selects data set within object to plot 
+	* **summary** = (char) selects intended summary statistic for temporal plot. ("mean", "max", "min", "median")
+	* **show_plot** = (boolean) turn off plotting and return only the plotting dataframe.
+* Example function call:
+
+```python
+df = plot_cube(cube=x, variable="B", type="space", summary = "max", showPlot = True)
+``` 
 
 
 
