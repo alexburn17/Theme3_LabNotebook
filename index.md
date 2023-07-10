@@ -30,6 +30,7 @@ Spacetime is currently available as a package in R. It is in it's beta version (
 * [Spacetime Installation and Walkthrough Notebook](spaceTime_vignettes/spacetimeDoc.html)
 	* [R Markdown file](templates/spacetimeDoc.Rmd)
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
+* [KNOWN ISSUES! (10 JULY 2021)](known_issues_R.md)
 
 ### Installing Spacetime:
 Spacetime is a package built in python that makes cleaning spatiotemporal datasets a much simpler task than it has been previously. Because it is built in python, a python installtion is required. To install spacetime from github, first install miniconda using the reticulate package. This only needs to be completed once before the first installation. Subsequent updates do not require this step.
