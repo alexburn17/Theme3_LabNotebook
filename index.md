@@ -30,7 +30,7 @@ Spacetime is currently available as a package in R. It is in it's beta version (
 * [Spacetime Installation and Walkthrough Notebook](spaceTime_vignettes/spacetimeDoc.html)
 	* [R Markdown file](templates/spacetimeDoc.Rmd)
 * [Github Repository](https://github.com/alexburn17/spacetime_r)
-* [KNOWN ISSUES! (10 JULY 2021)](known_issues_R.md)
+* [KNOWN ISSUES! (10 JULY 2023)](known_issues_R.md)
 
 ### Installing Spacetime:
 Spacetime is a package built in python that makes cleaning spatiotemporal datasets a much simpler task than it has been previously. Because it is built in python, a python installtion is required. To install spacetime from github, first install miniconda using the reticulate package. This only needs to be completed once before the first installation. Subsequent updates do not require this step.
@@ -43,7 +43,7 @@ library(reticulate)install_miniconda(path = miniconda_path(), force = TRUE)
 Now that we have a miniconda environment to work from, we can proceed with installing spacetime.
 ```rlibrary(devtools)install_github("alexburn17/spacetime_R") # install spacetimelibrary(spacetime) # load the package```
 
-### Citing Spacetime:
+### Citing Spacetime for R:
 
 Please use the following citation when publishing works that use spacetime:
 
@@ -56,26 +56,42 @@ R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://
 
 
 
-<img src="img/st_Py.png" width="300" align="right"> 
+<img src="img/st_Py.png" width="300" align="right">  Installing Spacetime Python
 
 
-
-Spacetime will soon be available as a stand-alone Python Library. In the meantime, the codebase can be installed via github and its functions can be accesed using the below templates.
-
-
-
-
+Spacetime is also available as a Python library. It is currently on Test PyPI and can be installed with pip. Information on installation and the package's api are below.
 
 ### Documentation: 
+* [Spacetime PyPI Page](https://test.pypi.org/project/spacetimepy/)
 * [Spacetime API - Python](api.md)
 * [PyPI Page Draft](description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
 	* [Python Walkthrough Script](templates/spacetime_walkthrough.py) 
 	* [R Markdown Script](templates/spacetime_walkthrough.Rmd)
 * [Python Dependancies](documents/requires.txt)
-* [Github Repository](https://github.com/alexburn17/spacetime_demo)
+* [Github Repository](https://github.com/alexburn17/spacetime_python)
 
-### Spacetime Vignettes:
+### Installing Spacetime for Python
+
+In you bash window, install spacetimepy with pip.
+
+```bash
+pip install -i https://test.pypi.org/simple/ spacetimepy
+```
+
+In your python script, load spacetimepy in the following manner.
+
+
+
+```python
+import spacetimepy as sp
+```
+
+
+
+
+
+### Spacetime Python Vignettes:
 When using vignettes, simply copy spacetime commands directly into your own driver. (Note: vignettes will continue to grow and more will be added.)
 
 * [Loading Files and Making Cubes](spaceTime_vignettes/readingFiles.html)
@@ -86,6 +102,15 @@ When using vignettes, simply copy spacetime commands directly into your own driv
 * [Plotting Cubes](spaceTime_vignettes/plotting.html)
 	* [Plotting Video Demo](https://youtu.be/qOAcEe4S32g) 
 
+
+### Citing Spacetime for Python:
+
+Please use the following citation when publishing works that use spacetime:
+
+*P.A. Burnham, M. Dube, Q. Dubois, N.J. Gotelli, and B.J. McGill (2023). spacetime: A library for cleaning and analyzing spatiotemporal data in
+Python. Python version 0.1.5. [https://github.com/alexburn17/spacetime_r](https://github.com/alexburn17/spacetime_python)*
+
+* [BibTeX Citation for LaTeX Users](documents/spacetime_bibtex_py.txt)
 
 
 ## Spacetime Archived Content:
