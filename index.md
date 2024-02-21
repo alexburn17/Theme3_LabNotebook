@@ -76,7 +76,7 @@ Spacetime is also available as a Python library. It is currently on PyPI and can
 In your bash window, install spacetimepy with pip.
 
 ```bash
-pip install spacetimepy==0.1.6
+pip install spacetimepy
 ```
 
 In your python script, load spacetimepy in the following manner.
