@@ -59,10 +59,10 @@ R. R package version 0.0.1. [https://github.com/alexburn17/spacetime_r](https://
 <img src="img/st_Py.png" width="300" align="right">  Installing Spacetime Python
 
 
-Spacetime is also available as a Python library. It is currently on Test PyPI and can be installed with pip. Information on installation and the package's api are below.
+Spacetime is also available as a Python library. It is currently on PyPI and can be installed with pip. Information on installation and the package's api are below.
 
 ### Documentation: 
-* [Spacetime PyPI Page](https://test.pypi.org/project/spacetimepy/)
+* [Spacetime PyPI Page](https://pypi.org/project/spacetimepy/)
 * [Spacetime API - Python](api.md)
 * [PyPI Page Draft](description.md)
 * [Spacetime Walkthrough Notebook](spaceTime_vignettes/spacetime_walkthrough.html)
@@ -73,10 +73,10 @@ Spacetime is also available as a Python library. It is currently on Test PyPI an
 
 ### Installing Spacetime for Python
 
-In you bash window, install spacetimepy with pip.
+In your bash window, install spacetimepy with pip.
 
 ```bash
-pip install -i https://test.pypi.org/simple/ spacetimepy
+pip install spacetimepy==0.1.6
 ```
 
 In your python script, load spacetimepy in the following manner.
